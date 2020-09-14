@@ -1,6 +1,6 @@
 using System;
 
-namespace Dwapi.Exchange.SharedKernel
+namespace Dwapi.Exchange.SharedKernel.Common
 {
     public class ExtractDataSource
     {

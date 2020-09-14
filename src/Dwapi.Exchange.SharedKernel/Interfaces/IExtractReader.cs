@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
+using Dwapi.Exchange.SharedKernel.Common;
+using Dwapi.Exchange.SharedKernel.Model;
 
-namespace Dwapi.Exchange.SharedKernel
+namespace Dwapi.Exchange.SharedKernel.Interfaces
 {
     public interface IExtractReader
     {
