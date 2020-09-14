@@ -15,7 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Dwapi.Exchange.SharedKernel\Dwapi.Exchange.SharedKernel.csproj" />
+    <ProjectReference Include="..\Dwapi.Exchange.Core\Dwapi.Exchange.Core.csproj" />
+    <ProjectReference Include="..\Dwapi.Exchange.SharedKernel.Infrastructure\Dwapi.Exchange.SharedKernel.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
