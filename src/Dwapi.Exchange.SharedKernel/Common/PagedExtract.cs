@@ -18,5 +18,10 @@ namespace Dwapi.Exchange.SharedKernel
 			TotalItemCount = extract.Count;
 			Extract = extract;
 		}
+
+		public override string ToString()
+		{
+			return $"Page {PageNumber} of {PageCount} | [{TotalItemCount}] Rows";
+		}
 	}
 }

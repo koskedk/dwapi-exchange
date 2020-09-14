@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Dapper;
@@ -11,11 +10,11 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure
 {
     public class ExtractReader:IExtractReader
     {
-        private readonly DataSource _dataSource;
+        private readonly ExtractDataSource _extractDataSource;
 
-        public ExtractReader(DataSource dataSource)
+        public ExtractReader(ExtractDataSource extractDataSource)
         {
-            _dataSource = dataSource;
+            _extractDataSource = extractDataSource;
         }
 
         public PagedExtract Read(IExtractDefinition definition, int pageNumber, int pageSize)
@@ -38,10 +37,10 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure
         }
         private IDbConnection GetConnection()
         {
-            if (_dataSource.ConnectionType==ConnectionType.MsSql)
-                return new SqlConnection(_dataSource.ConnectionString);
+            if (_extractDataSource.DatabaseType==DatabaseType.MsSql)
+                return new SqlConnection(_extractDataSource.Connection);
 
-            return new SqliteConnection(_dataSource.ConnectionString);
+            return new SqliteConnection(_extractDataSource.Connection);
         }
     }
 }
