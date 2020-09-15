@@ -1,8 +1,8 @@
-﻿using Dwapi.Exchange.Core.Domain.Definitions;
+﻿using System.Linq;
+using Dwapi.Exchange.Core.Domain.Definitions;
 using Dwapi.Exchange.SharedKernel.Common;
 using Dwapi.Exchange.SharedKernel.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Dwapi.Exchange.Infrastructure.Data
 {
@@ -13,7 +13,6 @@ namespace Dwapi.Exchange.Infrastructure.Data
         public RegistryContext(DbContextOptions<RegistryContext> options) : base(options)
         {
         }
-
         public override void EnsureSeeded()
         {
             if (!Registries.Any())
@@ -30,5 +29,4 @@ namespace Dwapi.Exchange.Infrastructure.Data
             SaveChanges();
         }
     }
-
 }
