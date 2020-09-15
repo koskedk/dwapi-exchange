@@ -1,0 +1,58 @@
+2020-09-15 19:42:11.822 +03:00 [ERR] An exception occurred while iterating over the results of a query for context type 'Dwapi.Exchange.Infrastructure.Data.RegistryContext'.
+System.InvalidCastException: Unable to cast object of type 'System.String' to type 'System.Guid'.
+   at Microsoft.Data.SqlClient.SqlBuffer.get_Guid()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetGuid(Int32 i)
+   at lambda_method(Closure , QueryContext , DbDataReader )
+   at Microsoft.EntityFrameworkCore.Query.RelationalShapedQueryCompilingExpressionVisitor.CustomShaperCompilingExpressionVisitor.PopulateIncludeCollection[TIncludingEntity,TIncludedEntity](Int32 collectionId, QueryContext queryContext, DbDataReader dbDataReader, ResultCoordinator resultCoordinator, Func`3 parentIdentifier, Func`3 outerIdentifier, Func`3 selfIdentifier, Func`5 innerShaper, INavigation inverseNavigation, Action`2 fixup, Boolean trackingQuery)
+   at lambda_method(Closure , QueryContext , DbDataReader , ResultContext , Int32[] , ResultCoordinator )
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryingEnumerable`1.Enumerator.MoveNext()
+System.InvalidCastException: Unable to cast object of type 'System.String' to type 'System.Guid'.
+   at Microsoft.Data.SqlClient.SqlBuffer.get_Guid()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetGuid(Int32 i)
+   at lambda_method(Closure , QueryContext , DbDataReader )
+   at Microsoft.EntityFrameworkCore.Query.RelationalShapedQueryCompilingExpressionVisitor.CustomShaperCompilingExpressionVisitor.PopulateIncludeCollection[TIncludingEntity,TIncludedEntity](Int32 collectionId, QueryContext queryContext, DbDataReader dbDataReader, ResultCoordinator resultCoordinator, Func`3 parentIdentifier, Func`3 outerIdentifier, Func`3 selfIdentifier, Func`5 innerShaper, INavigation inverseNavigation, Action`2 fixup, Boolean trackingQuery)
+   at lambda_method(Closure , QueryContext , DbDataReader , ResultContext , Int32[] , ResultCoordinator )
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryingEnumerable`1.Enumerator.MoveNext()
+2020-09-15 19:42:11.856 +03:00 [ERR] GetExtract error
+System.InvalidCastException: Unable to cast object of type 'System.String' to type 'System.Guid'.
+   at Microsoft.Data.SqlClient.SqlBuffer.get_Guid()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetGuid(Int32 i)
+   at lambda_method(Closure , QueryContext , DbDataReader )
+   at Microsoft.EntityFrameworkCore.Query.RelationalShapedQueryCompilingExpressionVisitor.CustomShaperCompilingExpressionVisitor.PopulateIncludeCollection[TIncludingEntity,TIncludedEntity](Int32 collectionId, QueryContext queryContext, DbDataReader dbDataReader, ResultCoordinator resultCoordinator, Func`3 parentIdentifier, Func`3 outerIdentifier, Func`3 selfIdentifier, Func`5 innerShaper, INavigation inverseNavigation, Action`2 fixup, Boolean trackingQuery)
+   at lambda_method(Closure , QueryContext , DbDataReader , ResultContext , Int32[] , ResultCoordinator )
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryingEnumerable`1.Enumerator.MoveNext()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at Dwapi.Exchange.Core.Application.Queries.GetRegistryHandler.Handle(GetRegistry request, CancellationToken cancellationToken) in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange.Core/Application/Queries/GetRegistry.cs:line 34
+2020-09-15 19:42:11.865 +03:00 [ERR] Error loading Registry information
+System.Exception: Unable to cast object of type 'System.String' to type 'System.Guid'.
+   at Dwapi.Exchange.Controllers.RegistryController.Get() in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange/Controllers/RegistryController.cs:line 33
+2020-09-15 19:43:40.824 +03:00 [ERR] An exception occurred while iterating over the results of a query for context type 'Dwapi.Exchange.Infrastructure.Data.RegistryContext'.
+System.InvalidCastException: Unable to cast object of type 'System.String' to type 'System.Guid'.
+   at Microsoft.Data.SqlClient.SqlBuffer.get_Guid()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetGuid(Int32 i)
+   at lambda_method(Closure , QueryContext , DbDataReader )
+   at Microsoft.EntityFrameworkCore.Query.RelationalShapedQueryCompilingExpressionVisitor.CustomShaperCompilingExpressionVisitor.PopulateIncludeCollection[TIncludingEntity,TIncludedEntity](Int32 collectionId, QueryContext queryContext, DbDataReader dbDataReader, ResultCoordinator resultCoordinator, Func`3 parentIdentifier, Func`3 outerIdentifier, Func`3 selfIdentifier, Func`5 innerShaper, INavigation inverseNavigation, Action`2 fixup, Boolean trackingQuery)
+   at lambda_method(Closure , QueryContext , DbDataReader , ResultContext , Int32[] , ResultCoordinator )
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryingEnumerable`1.Enumerator.MoveNext()
+System.InvalidCastException: Unable to cast object of type 'System.String' to type 'System.Guid'.
+   at Microsoft.Data.SqlClient.SqlBuffer.get_Guid()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetGuid(Int32 i)
+   at lambda_method(Closure , QueryContext , DbDataReader )
+   at Microsoft.EntityFrameworkCore.Query.RelationalShapedQueryCompilingExpressionVisitor.CustomShaperCompilingExpressionVisitor.PopulateIncludeCollection[TIncludingEntity,TIncludedEntity](Int32 collectionId, QueryContext queryContext, DbDataReader dbDataReader, ResultCoordinator resultCoordinator, Func`3 parentIdentifier, Func`3 outerIdentifier, Func`3 selfIdentifier, Func`5 innerShaper, INavigation inverseNavigation, Action`2 fixup, Boolean trackingQuery)
+   at lambda_method(Closure , QueryContext , DbDataReader , ResultContext , Int32[] , ResultCoordinator )
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryingEnumerable`1.Enumerator.MoveNext()
+2020-09-15 19:43:40.825 +03:00 [ERR] GetExtract error
+System.InvalidCastException: Unable to cast object of type 'System.String' to type 'System.Guid'.
+   at Microsoft.Data.SqlClient.SqlBuffer.get_Guid()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetGuid(Int32 i)
+   at lambda_method(Closure , QueryContext , DbDataReader )
+   at Microsoft.EntityFrameworkCore.Query.RelationalShapedQueryCompilingExpressionVisitor.CustomShaperCompilingExpressionVisitor.PopulateIncludeCollection[TIncludingEntity,TIncludedEntity](Int32 collectionId, QueryContext queryContext, DbDataReader dbDataReader, ResultCoordinator resultCoordinator, Func`3 parentIdentifier, Func`3 outerIdentifier, Func`3 selfIdentifier, Func`5 innerShaper, INavigation inverseNavigation, Action`2 fixup, Boolean trackingQuery)
+   at lambda_method(Closure , QueryContext , DbDataReader , ResultContext , Int32[] , ResultCoordinator )
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryingEnumerable`1.Enumerator.MoveNext()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at Dwapi.Exchange.Core.Application.Queries.GetRegistryHandler.Handle(GetRegistry request, CancellationToken cancellationToken) in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange.Core/Application/Queries/GetRegistry.cs:line 34
+2020-09-15 19:43:40.826 +03:00 [ERR] Error loading Registry information
+System.Exception: Unable to cast object of type 'System.String' to type 'System.Guid'.
+   at Dwapi.Exchange.Controllers.RegistryController.Get() in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange/Controllers/RegistryController.cs:line 33

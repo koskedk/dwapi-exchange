@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dwapi.Exchange.Infrastructure.Data;
 using Dwapi.Exchange.SharedKernel.Common;
 using Dwapi.Exchange.SharedKernel.Custom;
-using Dwapi.Exchange.SharedKernel.Infrastructure.Data;
-using Dwapi.Exchange.SharedKernel.Infrastructure.Tests.TestArtifacts;
-using Dwapi.Exchange.SharedKernel.Interfaces;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Serilog;
 
-namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests
+namespace Dwapi.Exchange.Infrastructure.Tests
 {
     [SetUpFixture]
     public class TestInitializer
@@ -58,28 +56,25 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests
             var liveConnection = new SqliteConnection(connectionString.Replace(".db", $"{DateTime.Now.Ticks}.db"));
             liveConnection.Open();
 
-            var services = new ServiceCollection().AddDbContext<TestDbContext>(x => x.UseSqlite(liveConnection));
-
-            services
-                .AddTransient<TestDbContext>()
-                .AddTransient<ITestCarRepository, TestCarRepository>()
-                .AddTransient<IExtractReader>(s =>
-                    new ExtractReader(ExtractDataSource));
-
+            var services = new ServiceCollection();
+            services.AddDbContext<RegistryContext>(x =>
+                x.UseSqlite(liveConnection), ServiceLifetime.Transient);
+            services.AddInfrastructure(config,false,ExtractDataSource);
             Services = services;
-
             ServicesOnly = Services;
             ServiceProvider = Services.BuildServiceProvider();
+
         }
 
         public static void ClearDb()
         {
-            var context = ServiceProvider.GetService<TestDbContext>();
+            var context = ServiceProvider.GetService<RegistryContext>();
             context.Database.EnsureCreated();
+            context.EnsureSeeded();
         }
         public static void SeedData(params IEnumerable<object>[] entities)
         {
-            var context = ServiceProvider.GetService<TestDbContext>();
+            var context = ServiceProvider.GetService<RegistryContext>();
             foreach (IEnumerable<object> t in entities)
             {
                 context.AddRange(t);

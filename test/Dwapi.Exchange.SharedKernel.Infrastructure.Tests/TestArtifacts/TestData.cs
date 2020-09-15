@@ -20,7 +20,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.TestArtifacts
             {
                 Name = @"Patient Extracts",
                 Description = @"All Patients",
-                Sql = @"select * from Patients",
+                SqlScript = @"select * from Patients",
                 RecordCount = 10,
                 Updated = DateTime.Now.AddHours(1),
                 Refreshed = DateTime.Now

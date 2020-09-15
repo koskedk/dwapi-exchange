@@ -19,7 +19,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
 
         public ExtractReader(ExtractDataSource extractDataSource)
         {
-            _extractDataSource = extractDataSource;
+            _extractDataSource = extractDataSource ?? throw new Exception("Datasource not initialized !");
         }
 
         public async Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber, int pageSize)
@@ -29,7 +29,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
 
             var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
 
-            var sql = $"{definition.Sql} ORDER BY LiveRowId ";
+            var sql = $"{definition.SqlScript} ORDER BY LiveRowId ";
 
             var sqlPaging = @"
                  OFFSET @Offset ROWS 
