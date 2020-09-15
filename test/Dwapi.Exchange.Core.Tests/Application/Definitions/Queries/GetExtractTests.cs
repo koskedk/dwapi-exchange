@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Dwapi.Exchange.Core.Application.Queries;
+using Dwapi.Exchange.Core.Application.Definitions.Queries;
 using Dwapi.Exchange.Core.Domain.Definitions;
 using Dwapi.Exchange.Core.Tests.TestArtifacts;
 using MediatR;
@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using Serilog;
 
-namespace Dwapi.Exchange.Core.Tests.Application.Queries
+namespace Dwapi.Exchange.Core.Tests.Application.Definitions.Queries
 {
     [TestFixture]
     public class GetExtractTests

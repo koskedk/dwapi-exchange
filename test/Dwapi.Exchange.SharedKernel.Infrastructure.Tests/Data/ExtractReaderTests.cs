@@ -31,7 +31,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
             Assert.AreEqual(5,top5.TotalItemCount);
             Log.Debug(top5.ToString());
             Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
-            
+
 
             var bottom5 = _reader.Read(_definition, 2, 5).Result;
             Assert.AreEqual(2,bottom5.PageNumber);
@@ -40,6 +40,13 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
             Assert.AreEqual(5,bottom5.TotalItemCount);
             Log.Debug(bottom5.ToString());
             Log.Debug(JsonConvert.SerializeObject(bottom5.Extract.First()));
+        }
+
+        [Test]
+        public void should_Get_Count()
+        {
+            var top5 = _reader.GetCount(_definition).Result;
+            Assert.AreEqual(10,top5);
         }
     }
 }

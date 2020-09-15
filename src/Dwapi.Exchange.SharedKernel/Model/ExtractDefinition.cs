@@ -11,6 +11,13 @@ namespace Dwapi.Exchange.SharedKernel.Model
         public DateTime Updated { get; set; }
         public DateTime Refreshed { get; set; }
 
+        public string GenerateCountScript()
+        {
+            return @$"
+                select count(LiveRowId) Count
+                from ({SqlScript})x";
+        }
+
         public override string ToString()
         {
             return $"{Name}";

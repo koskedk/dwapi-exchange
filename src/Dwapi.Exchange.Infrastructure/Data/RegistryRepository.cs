@@ -25,7 +25,7 @@ namespace Dwapi.Exchange.Infrastructure.Data
         public async Task<Registry> GetByCode(string code)
         {
             var registry = await GetAll()
-                .Where(x => x.Name.ToLower() == code)
+                .Where(x => x.Code.ToLower() == code.ToLower())
                 .FirstOrDefaultAsync();
 
             return registry;

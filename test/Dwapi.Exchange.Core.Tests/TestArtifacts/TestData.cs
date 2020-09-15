@@ -18,7 +18,17 @@ namespace Dwapi.Exchange.Core.Tests.TestArtifacts
             return new List<Registry>() {registry};
         }
 
-        public static ExtractRequest GenerateExtractRequest()
+        public static List<Registry> GenerateRawRegistry()
+        {
+            var registry = new Registry
+            {
+                Id = LiveGuid.NewGuid(),
+                Name = "DWHX", Purpose = "DWHX", Code = "DWHX"
+            };
+            registry.AddRequest(GenerateExtractRequest(0));
+            return new List<Registry>() {registry};
+        }
+        public static ExtractRequest GenerateExtractRequest(int count=10)
         {
             return new ExtractRequest
             {
@@ -26,9 +36,8 @@ namespace Dwapi.Exchange.Core.Tests.TestArtifacts
                 Name = @"Patients",
                 Description = @"All Patients",
                 SqlScript = @"select * from Patients",
-                RecordCount = 10,
-                Updated = DateTime.Now.AddHours(1),
-                Refreshed = DateTime.Now
+                RecordCount = count,
+                Updated = DateTime.Now.AddHours(1)
             };
         }
     }

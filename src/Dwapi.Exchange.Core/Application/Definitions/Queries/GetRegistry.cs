@@ -10,7 +10,7 @@ using Dwapi.Exchange.Core.Domain.Definitions.Dtos;
 using MediatR;
 using Serilog;
 
-namespace Dwapi.Exchange.Core.Application.Queries
+namespace Dwapi.Exchange.Core.Application.Definitions.Queries
 {
     public class GetRegistry : IRequest<Result<List<RegistryDto>>>
     {

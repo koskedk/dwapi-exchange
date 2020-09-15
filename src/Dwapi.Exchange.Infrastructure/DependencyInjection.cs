@@ -27,7 +27,7 @@ namespace Dwapi.Exchange.Infrastructure
 
             services
                 .AddScoped<IRegistryRepository, RegistryRepository>()
-                .AddTransient<IExtractReader>(s => new ExtractReader(extractDataSource));
+                .AddScoped<IExtractReader>(s => new ExtractReader(extractDataSource));
             return services;
         }
     }

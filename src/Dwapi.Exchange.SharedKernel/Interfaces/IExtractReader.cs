@@ -7,5 +7,7 @@ namespace Dwapi.Exchange.SharedKernel.Interfaces
     public interface IExtractReader
     {
         Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber,int pageSize);
+        Task<long> GetCount(ExtractDefinition definition);
+        Task Initialize(ExtractDefinition definition);
     }
 }

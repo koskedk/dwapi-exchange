@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Dwapi.Exchange.Core.Application.Queries;
+using Dwapi.Exchange.Core.Application.Definitions.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;

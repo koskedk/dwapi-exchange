@@ -64,6 +64,35 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             }
         }
 
+        public async Task<long> GetCount(ExtractDefinition definition)
+        {
+            try
+            {
+                var sql = definition.GenerateCountScript();
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+                    var results = await cn.QueryAsync<long>(sql);
+
+                    var counts = results.ToList();
+                    if (counts.Any())
+                        return counts.First();
+                    return 0;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract count", e);
+                throw;
+            }
+        }
+
+        public Task Initialize(ExtractDefinition definition)
+        {
+            throw new NotImplementedException();
+        }
+
+
         private IDbConnection GetConnection()
         {
             if (_extractDataSource.DatabaseType==DatabaseType.MsSql)

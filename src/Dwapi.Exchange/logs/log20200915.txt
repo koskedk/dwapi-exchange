@@ -56,3 +56,53 @@ System.InvalidCastException: Unable to cast object of type 'System.String' to ty
 2020-09-15 19:43:40.826 +03:00 [ERR] Error loading Registry information
 System.Exception: Unable to cast object of type 'System.String' to type 'System.Guid'.
    at Dwapi.Exchange.Controllers.RegistryController.Get() in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange/Controllers/RegistryController.cs:line 33
+2020-09-15 22:02:26.373 +03:00 [ERR] An unhandled exception has occurred while executing the request.
+System.NotSupportedException: Deserialization of reference types without parameterless constructor is not supported. Type 'Dwapi.Exchange.Core.Application.Definitions.Commands.RefreshIndex'
+   at System.Text.Json.ThrowHelper.ThrowNotSupportedException_DeserializeCreateObjectDelegateIsNull(Type invalidType)
+   at System.Text.Json.JsonSerializer.HandleStartObject(JsonSerializerOptions options, ReadStack& state)
+   at System.Text.Json.JsonSerializer.ReadCore(JsonSerializerOptions options, Utf8JsonReader& reader, ReadStack& readStack)
+   at System.Text.Json.JsonSerializer.ReadCore(JsonReaderState& readerState, Boolean isFinalBlock, ReadOnlySpan`1 buffer, JsonSerializerOptions options, ReadStack& readStack)
+   at System.Text.Json.JsonSerializer.ReadAsync[TValue](Stream utf8Json, Type returnType, JsonSerializerOptions options, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Mvc.Formatters.SystemTextJsonInputFormatter.ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
+   at Microsoft.AspNetCore.Mvc.Formatters.SystemTextJsonInputFormatter.ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
+   at Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinder.BindModelAsync(ModelBindingContext bindingContext)
+   at Microsoft.AspNetCore.Mvc.ModelBinding.ParameterBinder.BindModelAsync(ActionContext actionContext, IModelBinder modelBinder, IValueProvider valueProvider, ParameterDescriptor parameter, ModelMetadata metadata, Object value)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerBinderDelegateProvider.<>c__DisplayClass0_0.<<CreateBinderDelegate>g__Bind|0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2020-09-15 22:03:09.249 +03:00 [ERR] Error reading extract count
+2020-09-15 22:03:09.290 +03:00 [ERR] RefreshIndex error
+System.ArgumentException: Keyword not supported: 'initial catalog'.
+   at Microsoft.Data.Sqlite.SqliteConnectionStringBuilder.GetIndex(String keyword)
+   at Microsoft.Data.Sqlite.SqliteConnectionStringBuilder.set_Item(String keyword, Object value)
+   at System.Data.Common.DbConnectionStringBuilder.set_ConnectionString(String value)
+   at Microsoft.Data.Sqlite.SqliteConnectionStringBuilder..ctor(String connectionString)
+   at Microsoft.Data.Sqlite.SqliteConnection.set_ConnectionString(String value)
+   at Microsoft.Data.Sqlite.SqliteConnection..ctor(String connectionString)
+   at Dwapi.Exchange.SharedKernel.Infrastructure.Data.ExtractReader.GetConnection() in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange.SharedKernel.Infrastructure/Data/ExtractReader.cs:line 101
+   at Dwapi.Exchange.SharedKernel.Infrastructure.Data.ExtractReader.GetCount(ExtractDefinition definition) in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange.SharedKernel.Infrastructure/Data/ExtractReader.cs:line 72
+   at Dwapi.Exchange.Core.Application.Definitions.Commands.RefreshIndexHandler.Handle(RefreshIndex request, CancellationToken cancellationToken) in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange.Core/Application/Definitions/Commands/RefreshIndex.cs:line 50
+2020-09-15 22:03:09.304 +03:00 [ERR] Error loading Registry information
+System.Exception: Keyword not supported: 'initial catalog'.
+   at Dwapi.Exchange.Controllers.RegistryController.Refresh(RefreshIndex command) in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange/Controllers/RegistryController.cs:line 57
+2020-09-15 22:08:22.850 +03:00 [ERR] Error reading extract count
+2020-09-15 22:08:29.743 +03:00 [ERR] RefreshIndex error
+System.ArgumentException: Keyword not supported: 'initial catalog'.
+   at Microsoft.Data.Sqlite.SqliteConnectionStringBuilder.GetIndex(String keyword)
+   at Microsoft.Data.Sqlite.SqliteConnectionStringBuilder.set_Item(String keyword, Object value)
+   at System.Data.Common.DbConnectionStringBuilder.set_ConnectionString(String value)
+   at Microsoft.Data.Sqlite.SqliteConnectionStringBuilder..ctor(String connectionString)
+   at Microsoft.Data.Sqlite.SqliteConnection.set_ConnectionString(String value)
+   at Microsoft.Data.Sqlite.SqliteConnection..ctor(String connectionString)
+   at Dwapi.Exchange.SharedKernel.Infrastructure.Data.ExtractReader.GetConnection() in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange.SharedKernel.Infrastructure/Data/ExtractReader.cs:line 101
+   at Dwapi.Exchange.SharedKernel.Infrastructure.Data.ExtractReader.GetCount(ExtractDefinition definition) in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange.SharedKernel.Infrastructure/Data/ExtractReader.cs:line 72
+   at Dwapi.Exchange.Core.Application.Definitions.Commands.RefreshIndexHandler.Handle(RefreshIndex request, CancellationToken cancellationToken) in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange.Core/Application/Definitions/Commands/RefreshIndex.cs:line 59
+2020-09-15 22:08:30.070 +03:00 [ERR] Error loading Registry information
+System.Exception: Keyword not supported: 'initial catalog'.
+   at Dwapi.Exchange.Controllers.RegistryController.Refresh(RefreshIndex command) in /Users/koskedk/Projects/hmis/dwh/dwapi/exchange/src/Dwapi.Exchange/Controllers/RegistryController.cs:line 57

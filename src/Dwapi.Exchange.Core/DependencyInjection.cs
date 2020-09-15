@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using AutoMapper;
 using Dwapi.Exchange.Core.Application.Common.Behaviors;
-using Dwapi.Exchange.Core.Application.Queries;
+using Dwapi.Exchange.Core.Application.Definitions.Queries;
 using Dwapi.Exchange.Core.Domain.Definitions.Dtos;
 using FluentValidation;
 using MediatR;
