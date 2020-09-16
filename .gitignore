@@ -423,6 +423,6 @@ ASALocalRun/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*s
-appsettings.Development.json
+appsettings.json
 src/Dwapi.Exchange/logs
 !src/Dwapi.Exchange/logs/.gitkeep
