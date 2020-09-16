@@ -424,5 +424,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*s
 appsettings.Development.json
-logs/*
-!logs/.gitkeep
+src/Dwapi.Exchange/logs
+!src/Dwapi.Exchange/logs/.gitkeep

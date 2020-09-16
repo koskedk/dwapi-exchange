@@ -10,12 +10,21 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Design" Version="1.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Z.Dapper.Plus" Version="3.0.18" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Dwapi.Exchange.SharedKernel\Dwapi.Exchange.SharedKernel.csproj" />
+    <ProjectReference Include="..\Dwapi.Exchange.Core\Dwapi.Exchange.Core.csproj" />
+    <ProjectReference Include="..\Dwapi.Exchange.SharedKernel.Infrastructure\Dwapi.Exchange.SharedKernel.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Seed\Registry.csv" />
+    <EmbeddedResource Include="Seed\Registry.csv" />
+    <None Remove="Seed\ExtractRequest.csv" />
+    <EmbeddedResource Include="Seed\ExtractRequest.csv" />
   </ItemGroup>
 
 </Project>

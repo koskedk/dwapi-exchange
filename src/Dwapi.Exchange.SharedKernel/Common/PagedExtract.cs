@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Dwapi.Exchange.SharedKernel
+namespace Dwapi.Exchange.SharedKernel.Common
 {
 	public class PagedExtract
 	{
@@ -17,6 +17,11 @@ namespace Dwapi.Exchange.SharedKernel
 			PageCount = pageCount;
 			TotalItemCount = extract.Count;
 			Extract = extract;
+		}
+
+		public override string ToString()
+		{
+			return $"Page {PageNumber} of {PageCount} | [{TotalItemCount}] Rows";
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -24,20 +24,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Dwapi.Exchange.SharedKernel.Infrastructure\Dwapi.Exchange.SharedKernel.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\Dwapi.Exchange.SharedKernel\Dwapi.Exchange.SharedKernel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TestArtifacts\Database\source.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestArtifacts\Database\demo.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestArtifacts\Database\source.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Dwapi.Exchange.Core\Dwapi.Exchange.Core.csproj" />
+    <ProjectReference Include="..\..\src\Dwapi.Exchange.Infrastructure\Dwapi.Exchange.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Dwapi.Exchange.SharedKernel\Dwapi.Exchange.SharedKernel.csproj" />
+  </ItemGroup>
+
 
 </Project>
