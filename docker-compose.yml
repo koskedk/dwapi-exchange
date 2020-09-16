@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  dwapi:
+    image: kenyahmis/dwapiexchange:latest
+    build:
+      context: .
+      dockerfile: src/Dwapi.Exchange/Dockerfile
+    ports:
+      - "9787:5000"
+      - "9783:5001"
+    restart: unless-stopped
