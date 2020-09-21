@@ -4,12 +4,13 @@ using Dwapi.Exchange.Core.Application.Definitions.Commands;
 using Dwapi.Exchange.Core.Application.Definitions.Queries;
 using Dwapi.Exchange.Core.Domain.Definitions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
 namespace Dwapi.Exchange.Controllers
 {
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class RegistryController : ControllerBase

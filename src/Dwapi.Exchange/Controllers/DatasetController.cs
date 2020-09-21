@@ -2,12 +2,13 @@
 using System.Threading.Tasks;
 using Dwapi.Exchange.Core.Application.Definitions.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
 namespace Dwapi.Exchange.Controllers
 {
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class DatasetController : ControllerBase
