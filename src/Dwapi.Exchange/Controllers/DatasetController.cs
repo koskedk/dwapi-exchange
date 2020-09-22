@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Dwapi.Exchange.Core.Application.Definitions.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -14,17 +17,41 @@ namespace Dwapi.Exchange.Controllers
     public class DatasetController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IHttpContextAccessor _accessor;
 
-        public DatasetController(IMediator mediator)
+        public DatasetController(IMediator mediator, IHttpContextAccessor accessor)
         {
             _mediator = mediator;
+            _accessor = accessor;
         }
 
         [HttpGet]
         public async Task<ActionResult> Get(string code, string name, int pageNumber, int pageSize)
         {
+            #region Move to middleware
+
             try
             {
+                var client = User.Claims.FirstOrDefault(c => c.Type == "client_id")?.Value;
+                var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+
+                Log.Warning($"Client:{client}");
+                Log.Warning($"ClientIp:{ip}");
+                Log.Warning($"Request:{Request.Path}");
+                Log.Warning($"Query:{Request.QueryString}");
+                Log.Warning(new string('-',50));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e,"Request error");
+            }
+
+            #endregion
+
+
+            try
+            {
+
                 var request = new GetExtract(code, name, pageNumber, pageSize);
 
                 var results = await _mediator.Send(request);
