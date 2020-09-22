@@ -28,16 +28,26 @@ namespace Dwapi.Exchange.Controllers
         [HttpGet]
         public async Task<ActionResult> Get(string code, string name, int pageNumber, int pageSize)
         {
+            #region Move to middleware
 
+            try
+            {
+                var client = User.Claims.FirstOrDefault(c => c.Type == "client_id")?.Value;
+                var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
 
-            var client = User.Claims.FirstOrDefault(c => c.Type == "client_id")?.Value;
-            var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+                Log.Warning($"Client:{client}");
+                Log.Warning($"ClientIp:{ip}");
+                Log.Warning($"Request:{Request.Path}");
+                Log.Warning($"Query:{Request.QueryString}");
+                Log.Warning(new string('-',50));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e,"Request error");
+            }
 
-            Log.Warning($"Client:{client}");
-            Log.Warning($"ClientIp:{ip}");
-            Log.Warning($"Request:{Request.Path}");
-            Log.Warning($"Query:{Request.QueryString}");
-            Log.Warning(new string('-',50));
+            #endregion
+
 
             try
             {
