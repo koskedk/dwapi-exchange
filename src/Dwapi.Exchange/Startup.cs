@@ -5,6 +5,7 @@ using Dwapi.Exchange.Infrastructure.Data;
 using Dwapi.Exchange.SharedKernel.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,8 +26,8 @@ namespace Dwapi.Exchange
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(environment.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
@@ -36,19 +37,21 @@ namespace Dwapi.Exchange
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var authority = Configuration["Authority"];
             IdentityModelEventSource.ShowPII = true;
             services.AddControllers();
             services.AddSwaggerGen();
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://data.kenyahmis.org:8443";
+                    options.Authority = authority;
 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false
                     };
                 });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddInfrastructure(Configuration);
             services.AddApplication();
 
@@ -66,7 +69,6 @@ namespace Dwapi.Exchange
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
             }
             app.UseForwardedHeaders();
             app.UseHttpsRedirection();

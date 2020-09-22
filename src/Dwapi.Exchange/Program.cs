@@ -16,7 +16,8 @@ namespace Dwapi.Exchange
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Debug)
                 .Enrich.FromLogContext()
                 .WriteTo.Console(LogEventLevel.Debug)
-                .WriteTo.File("logs/log.txt", LogEventLevel.Error, rollingInterval: RollingInterval.Day)
+                //.WriteTo.File("logs/log.txt", LogEventLevel.Error, rollingInterval: RollingInterval.Day)
+                .WriteTo.Seq("http://localhost:5341",LogEventLevel.Warning)
                 .CreateLogger();
 
             try
