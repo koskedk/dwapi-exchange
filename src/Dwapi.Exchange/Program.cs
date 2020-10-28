@@ -21,7 +21,7 @@ namespace Dwapi.Exchange
                 .Enrich.FromLogContext()
                 .WriteTo.Console(LogEventLevel.Debug)
                 //.WriteTo.File("logs/log.txt", LogEventLevel.Error, rollingInterval: RollingInterval.Day)
-                .WriteTo.Seq(seqUrl,LogEventLevel.Warning)
+                .WriteTo.Seq(seqUrl,LogEventLevel.Warning,apiKey:"uoqBaiXU1LaXwQlgNsmD")
                 .CreateLogger();
 
             try
