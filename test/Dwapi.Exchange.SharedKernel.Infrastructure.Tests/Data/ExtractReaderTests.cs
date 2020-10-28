@@ -50,12 +50,9 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
         {
             var siteCodes = new List<int>()
             {
-                101
+                101,13634
             };
-            var counties = new List<string>()
-            {
-                "Bomet"
-            };
+            var counties = new List<string>();
             var top5 = _reader.ReadProfile(_definition,1, 5,siteCodes.ToArray(),counties.ToArray()).Result;
             Assert.AreEqual(1,top5.PageNumber);
             Assert.AreEqual(5,top5.PageSize);
