@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Dwapi.Exchange.Core.Application.Definitions.Queries;
+using Dwapi.Exchange.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -53,6 +54,50 @@ namespace Dwapi.Exchange.Controllers
             {
 
                 var request = new GetExtract(code, name, pageNumber, pageSize);
+
+                var results = await _mediator.Send(request);
+
+                if (results.IsSuccess)
+                    return Ok(results.Value);
+
+                throw new Exception(results.Error);
+            }
+            catch (Exception e)
+            {
+                var msg = $"Error loading Dataset ";
+                Log.Error(e, msg);
+                return StatusCode(500, $"{msg} {e.Message}");
+            }
+        }
+
+        [HttpGet("Profile")]
+        public async Task<ActionResult> Get([FromQuery] ReqDto req)
+        {
+            #region Move to middleware
+
+            try
+            {
+                var client = User.Claims.FirstOrDefault(c => c.Type == "client_id")?.Value;
+                var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+
+                Log.Warning($"Client:{client}");
+                Log.Warning($"ClientIp:{ip}");
+                Log.Warning($"Request:{Request.Path}");
+                Log.Warning($"Query:{Request.QueryString}");
+                Log.Warning(new string('-',50));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e,"Request error");
+            }
+
+            #endregion
+
+
+            try
+            {
+
+                var request = new GetExtract(req.code, "Profile", req.pageNumber, req.pageSize,req.siteCode,req.county);
 
                 var results = await _mediator.Send(request);
 

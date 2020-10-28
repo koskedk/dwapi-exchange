@@ -7,6 +7,7 @@ Id,Name,Description,SqlScript,RecordCount,RegistryId
 581b248a-f763-11ea-adc1-0242ac120002,PatientStatus,PatientStatus,SELECT * FROM PatientStatus,0,581b172e-f763-11ea-adc1-0242ac120002
 581b2804-f763-11ea-adc1-0242ac120002,Visits,Visits,SELECT * FROM Visits,0,581b172e-f763-11ea-adc1-0242ac120002
 581b29d0-f763-11ea-adc1-0242ac120002,Labs,Labs,SELECT * FROM Labs,0,581b172e-f763-11ea-adc1-0242ac120002
+581b21d0-f763-11ea-adc1-0242ac120002,Profile,Profile,SELECT * FROM Patients,0,581b172e-f763-11ea-adc1-0242ac120002
 
 
 
