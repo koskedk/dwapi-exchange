@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dwapi.Exchange.SharedKernel.Infrastructure.Tests.TestArtifacts;
 using Dwapi.Exchange.SharedKernel.Interfaces;
@@ -13,6 +15,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
     {
         private IExtractReader _reader;
         private SampleDefinition _definition;
+
 
         [SetUp]
         public void SetUp()
@@ -40,6 +43,29 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
             Assert.AreEqual(5,bottom5.TotalItemCount);
             Log.Debug(bottom5.ToString());
             Log.Debug(JsonConvert.SerializeObject(bottom5.Extract.First()));
+        }
+
+        [Test]
+        public void should_Read_Profile()
+        {
+            var siteCodes = new List<int>()
+            {
+                101
+            };
+            var counties = new List<string>()
+            {
+                "Bomet"
+            };
+            var top5 = _reader.ReadProfile(_definition,1, 5,siteCodes.ToArray(),counties.ToArray()).Result;
+            Assert.AreEqual(1,top5.PageNumber);
+            Assert.AreEqual(5,top5.PageSize);
+            Assert.AreEqual(2,top5.PageCount);
+            Assert.AreEqual(5,top5.TotalItemCount);
+            Log.Debug(top5.ToString());
+            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
+
+
+
         }
 
         [Test]

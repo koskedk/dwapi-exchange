@@ -26,5 +26,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.TestArtifacts
                 Refreshed = DateTime.Now
             };
         }
+
+
     }
 }

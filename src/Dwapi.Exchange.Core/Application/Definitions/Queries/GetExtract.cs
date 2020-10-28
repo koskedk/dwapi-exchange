@@ -17,13 +17,17 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
         public string Name { get; }
         public int Page { get; }
         public int PageSize { get; }
+        public int[] SiteCode { get; }
+        public string[] County { get; }
 
-        public GetExtract(string code, string name, int page, int pageSize = 50)
+        public GetExtract(string code, string name, int page, int pageSize = 50,int[] siteCode=null,string[] county=null)
         {
             Code = code;
             Name = name;
             Page = page;
             PageSize = pageSize;
+            SiteCode = siteCode;
+            County = county;
         }
     }
 
@@ -63,7 +67,17 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
                 if (null == extractRequest)
                     throw new Exception("Request does not exist");
 
-                var extract = await _extractReader.Read(extractRequest, request.Page, request.PageSize);
+                PagedExtract extract;
+
+                if (extractRequest.Name == "Profile")
+                {
+                    extract = await _extractReader.ReadProfile(extractRequest, request.Page, request.PageSize,request.SiteCode,request.County);
+                }
+                else
+                {
+                    extract = await _extractReader.Read(extractRequest, request.Page, request.PageSize);
+                }
+
                 return Result.Success(extract);
             }
             catch (Exception e)
