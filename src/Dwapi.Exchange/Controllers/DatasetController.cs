@@ -97,7 +97,7 @@ namespace Dwapi.Exchange.Controllers
             try
             {
 
-                var request = new GetExtract(req.code, "Profile", req.pageNumber, req.pageSize,req.siteCode,req.county);
+                var request = new GetExtract(req.code, "Profile", req.pageNumber, req.pageSize,req.siteCode,req.county,req.gender,req.age);
 
                 var results = await _mediator.Send(request);
 
