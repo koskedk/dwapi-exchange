@@ -10,5 +10,7 @@ namespace Dwapi.Exchange.Models
         [FromQuery(Name = "pageSize")] public int pageSize { get; set; }
         [FromQuery(Name = "siteCode")] public int[] siteCode { get; set; }
         [FromQuery(Name = "county")] public string[] county { get; set; }
+        [FromQuery(Name = "age")] public int age { get; set; }
+        [FromQuery(Name = "gender")] public string gender { get; set; }
     }
 }

@@ -39,7 +39,8 @@ namespace Dwapi.Exchange
         {
             var authority = Configuration["Authority"];
             IdentityModelEventSource.ShowPII = true;
-            services.AddControllers();
+            services.AddControllers()
+                ;//.AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; } );
             services.AddSwaggerGen();
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>

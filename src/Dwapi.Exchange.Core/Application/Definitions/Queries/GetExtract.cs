@@ -19,8 +19,10 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
         public int PageSize { get; }
         public int[] SiteCode { get; }
         public string[] County { get; }
+        public string Gender { get;  }
+        public int Age { get;  }
 
-        public GetExtract(string code, string name, int page, int pageSize = 50,int[] siteCode=null,string[] county=null)
+        public GetExtract(string code, string name, int page, int pageSize = 50,int[] siteCode=null,string[] county=null,string gender="",int age=-1)
         {
             Code = code;
             Name = name;
@@ -28,6 +30,8 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
             PageSize = pageSize;
             SiteCode = siteCode;
             County = county;
+            Gender = gender;
+            Age = age;
         }
     }
 
@@ -71,7 +75,7 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
 
                 if (extractRequest.Name == "Profile")
                 {
-                    extract = await _extractReader.ReadProfile(extractRequest, request.Page, request.PageSize,request.SiteCode,request.County);
+                    extract = await _extractReader.ReadProfileFilter(extractRequest, request.Page, request.PageSize,request.SiteCode,request.County,request.Gender,request.Age);
                 }
                 else
                 {

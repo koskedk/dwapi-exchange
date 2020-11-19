@@ -65,6 +65,27 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
 
         }
 
+
+        [Test]
+        public void should_Read_Profile_Filters()
+        {
+            var siteCodes = new List<int>()
+            {
+                101
+            };
+            var counties = new List<string>();
+            var top5 = _reader.ReadProfileFilter(_definition,1, 5,siteCodes.ToArray(),counties.ToArray(),"Male",10).Result;
+            Assert.AreEqual(1,top5.PageNumber);
+            Assert.AreEqual(5,top5.PageSize);
+            Assert.AreEqual(2,top5.PageCount);
+            Assert.AreEqual(5,top5.TotalItemCount);
+            Log.Debug(top5.ToString());
+            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
+
+///DataSource=/Users/koskedk/Projects/hmis/dwh/dwapi/exchange/test/Dwapi.Exchange.SharedKernel.Infrastructure.Tests/bin/Debug/netcoreapp3.1/TestArtifacts/Database/source.db
+
+        }
+
         [Test]
         public void should_Get_Count()
         {
