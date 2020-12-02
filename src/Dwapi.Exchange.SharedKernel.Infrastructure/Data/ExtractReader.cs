@@ -6,6 +6,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Dwapi.Exchange.Contracts;
 using Dwapi.Exchange.SharedKernel.Common;
 using Dwapi.Exchange.SharedKernel.Custom;
 using Dwapi.Exchange.SharedKernel.Interfaces;
@@ -421,6 +422,112 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
 
                     }
                     return new PagedExtract(pageNumber, pageSize, pageCount, results.ToList());
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract", e);
+                throw;
+            }
+        }
+
+        public async Task<PagedProfileExtract> ReadProfileFilterExpress(ExtractDefinition mainDefinition,ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null,
+            string[] county = null, string gender = "", int age = -1)
+        {
+             var whereList=new List<string>();
+            dynamic whereVals = new ExpandoObject();
+            pageNumber = pageNumber < 0 ? 1 : pageNumber;
+            pageSize = pageSize < 0 ? 1 : pageSize;
+
+            var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
+
+            var sql = $"{mainDefinition.SqlScript.Replace("*", nameof(Patients.PatientID))}";
+            var extractSql = $"{definition.SqlScript}";
+
+            whereVals.Offset = (pageNumber - 1) * pageSize;
+            whereVals.PageSize = pageSize;
+
+            try
+            {
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+
+
+                    if (null != siteCode && siteCode.Any())
+                    {
+                        whereList.Add($"FacilityCode IN @siteCode");
+                        whereVals.siteCode = siteCode;
+                    }
+
+                    if (null != county && county.Any())
+                    {
+                        whereList.Add($"County IN @county");
+                        whereVals.county = county;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(gender))
+                    {
+                        if (gender.Trim().ToLower() == "f")
+                            gender = "Female";
+                        if (gender.Trim().ToLower() == "m")
+                            gender = "Male";
+                        whereList.Add($"Gender Like @gender");
+                        whereVals.gender = gender;
+                    }
+
+                    if (age > 0)
+                    {
+                        whereList.Add($"Age=@age");
+                        whereVals.age = age;
+                    }
+
+                    if(whereList.Any())
+                        sql = $"{sql} WHERE {string.Join(" AND ",whereList)} ";
+
+                    sql = $"{sql} ORDER BY PatientID ";
+
+                    var sqlPaging = @"
+                         OFFSET @Offset ROWS 
+                         FETCH NEXT @PageSize ROWS ONLY
+                    ";
+
+
+                    if (_extractDataSource.DatabaseType == DatabaseType.SqLite)
+                    {
+                        sqlPaging = @" LIMIT @PageSize OFFSET @Offset;";
+                    }
+
+                    sql = $"{sql}{sqlPaging}";
+
+                    IEnumerable<dynamic> results = new List<dynamic>();
+
+                    if (_extractDataSource.DatabaseType == DatabaseType.SqLite)
+                    {
+                        var mainIdResult = await cn.QueryAsync<string>(sql, (object) whereVals);
+                        var patientIds = mainIdResult.ToList();
+                        results = await cn.QueryAsync(extractSql, new {patientIds});
+                    }
+                    else
+                    {
+                        var mainIdResult = await cn.QueryAsync<Guid>(sql, (object) whereVals);
+                        var patientIds = mainIdResult.ToList();
+                        results = await cn.QueryAsync(extractSql, new {patientIds});
+                    }
+
+                    Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(Patients), new List<string> { nameof(Patients.PatientID) });
+                    Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(AdverseEvent), new List<string> { nameof(AdverseEvent.LiveRowId) });
+                    Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(ART), new List<string> { nameof(ART.LiveRowId) });
+                    Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(Baselines), new List<string> { nameof(Baselines.LiveRowId)});
+                    Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(Labs), new List<string> { nameof(Labs.LiveRowId) });
+                    Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(PatientStatus), new List<string> { nameof(PatientStatus.LiveRowId) });
+                    Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(Pharmacy), new List<string> { nameof(Pharmacy.LiveRowId)  });
+                    Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(Visits), new List<string> { nameof(Visits.LiveRowId)  });
+
+                    var patients = (Slapper.AutoMapper.MapDynamic<Patients>(results) as IEnumerable<Patients>).ToList();
+
+
+                    return new PagedProfileExtract(pageNumber, pageSize, pageCount, patients);
                 }
             }
             catch (Exception e)

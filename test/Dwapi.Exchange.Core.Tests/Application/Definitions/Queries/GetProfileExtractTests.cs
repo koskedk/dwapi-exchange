@@ -12,7 +12,7 @@ using Serilog;
 namespace Dwapi.Exchange.Core.Tests.Application.Definitions.Queries
 {
     [TestFixture]
-    public class GetExtractTests
+    public class GetProfileExtractTests
     {
         private List<Registry> _registries;
         private IMediator _mediator;
@@ -34,7 +34,7 @@ namespace Dwapi.Exchange.Core.Tests.Application.Definitions.Queries
         [Test]
         public void should_Get_Extract()
         {
-            var getExtract = new GetExtract("dwh","Patients",1,5);
+            var getExtract = new GetProfileExtract("dwh","Profile",1,5);
 
             var result = _mediator.Send(getExtract).Result;
             Assert.True(result.IsSuccess);

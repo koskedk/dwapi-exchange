@@ -14,13 +14,15 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
     public class ExtractReaderTests
     {
         private IExtractReader _reader;
-        private SampleDefinition _definition;
+        private SampleDefinition _definition,_mainDefinition, _profileDefinition;
 
 
         [SetUp]
         public void SetUp()
         {
             _definition = TestData.GenerateSampleDefinition();
+            _mainDefinition = TestData.GenerateMainSampleDefinition();
+            _profileDefinition = TestData.GenerateSampleProfileDefinition();
             _reader = TestInitializer.ServiceProvider.GetService<IExtractReader>();
         }
 
@@ -83,6 +85,21 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
             Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
 
 ///DataSource=/Users/koskedk/Projects/hmis/dwh/dwapi/exchange/test/Dwapi.Exchange.SharedKernel.Infrastructure.Tests/bin/Debug/netcoreapp3.1/TestArtifacts/Database/source.db
+
+        }
+
+        [Test]
+        public void should_Read_Profile_Filters_Slapper()
+        {
+            var top5 = _reader.ReadProfileFilterExpress(_mainDefinition, _profileDefinition,1, 4).Result;
+            Assert.AreEqual(1,top5.PageNumber);
+            Assert.AreEqual(4,top5.PageSize);
+            Assert.AreEqual(1,top5.PageCount);
+            Assert.AreEqual(4,top5.TotalItemCount);
+            Log.Debug(top5.ToString());
+            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
+
+            ///DataSource=/Users/koskedk/Projects/hmis/dwh/dwapi/exchange/test/Dwapi.Exchange.SharedKernel.Infrastructure.Tests/bin/Debug/netcoreapp3.1/TestArtifacts/Database/source.db
 
         }
 

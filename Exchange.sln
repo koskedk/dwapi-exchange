@@ -35,6 +35,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{BFBF16D9-89C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwapi.Exchange", "src\Dwapi.Exchange\Dwapi.Exchange.csproj", "{003A1DDD-7B16-48B2-85E8-0067374D68D5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{A7FD12AF-5F36-4DF4-A8FD-884C016196D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwapi.Exchange.Contracts", "src\Dwapi.Exchange.Contracts\Dwapi.Exchange.Contracts.csproj", "{5DF2833D-FD81-4548-B4F0-4CAF8FC2B966}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +81,10 @@ Global
 		{003A1DDD-7B16-48B2-85E8-0067374D68D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{003A1DDD-7B16-48B2-85E8-0067374D68D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{003A1DDD-7B16-48B2-85E8-0067374D68D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DF2833D-FD81-4548-B4F0-4CAF8FC2B966}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DF2833D-FD81-4548-B4F0-4CAF8FC2B966}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DF2833D-FD81-4548-B4F0-4CAF8FC2B966}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DF2833D-FD81-4548-B4F0-4CAF8FC2B966}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +104,8 @@ Global
 		{5D607CD2-D585-4E82-BAAE-34608A182FAF} = {B6FEE8B9-4FF8-4C3C-BD80-CC32F7EC15A0}
 		{BFBF16D9-89CC-4BD8-A57C-769AB6AA1E5C} = {C44724F5-236F-4B97-AE7B-64DFF7EDA32D}
 		{003A1DDD-7B16-48B2-85E8-0067374D68D5} = {BFBF16D9-89CC-4BD8-A57C-769AB6AA1E5C}
+		{A7FD12AF-5F36-4DF4-A8FD-884C016196D0} = {C44724F5-236F-4B97-AE7B-64DFF7EDA32D}
+		{5DF2833D-FD81-4548-B4F0-4CAF8FC2B966} = {A7FD12AF-5F36-4DF4-A8FD-884C016196D0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E1EA239-6B19-414D-AB96-B8F801D7D871}
