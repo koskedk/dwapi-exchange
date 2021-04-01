@@ -68,6 +68,37 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             }
         }
 
+        public async Task<PagedExtract> ReadProc(ExtractDefinition definition, int pageNumber, int pageSize)
+        {
+            pageNumber = pageNumber < 0 ? 1 : pageNumber;
+            pageSize = pageSize < 0 ? 1 : pageSize;
+
+            var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
+
+            var sql = $"{definition.SqlProc}";
+
+            if (_extractDataSource.DatabaseType == DatabaseType.SqLite)
+                return await Read(definition, pageNumber, pageSize);
+
+            try
+            {
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+                    var results = await cn.QueryAsync(
+                        sql,
+                        new {PageNumber = pageNumber, PageSize = pageSize},
+                        commandType: CommandType.StoredProcedure);
+                    return new PagedExtract(pageNumber, pageSize, pageCount, results.ToList());
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract", e);
+                throw;
+            }
+        }
+
         public async Task<PagedExtract> ReadProfile(ExtractDefinition definition, int pageNumber, int pageSize,int[] siteCode = null,
             string[] county = null)
         {

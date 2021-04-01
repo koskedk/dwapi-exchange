@@ -79,7 +79,7 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
                 }
                 else
                 {
-                    extract = await _extractReader.Read(extractRequest, request.Page, request.PageSize);
+                    extract = await _extractReader.ReadProc(extractRequest, request.Page, request.PageSize);
                 }
 
                 return Result.Success(extract);
