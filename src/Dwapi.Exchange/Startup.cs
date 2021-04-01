@@ -85,6 +85,7 @@ namespace Dwapi.Exchange
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             EnsureMigrationOfContext<RegistryContext>(app);
+            Dapper.SqlMapper.Settings.CommandTimeout = 3600;
             Log.Information($"Dwapi.Exchange [Version {GetType().Assembly.GetName().Version}] started successfully");
         }
 
