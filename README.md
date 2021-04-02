@@ -34,7 +34,7 @@ API implements paging of results for each data set i.e. you need to specify
 
 # Usage
 
-Request an access token
+Request Access Token
 
 ```bash
 curl -v https://data.kenyahmis.org:8443/connect/token \
