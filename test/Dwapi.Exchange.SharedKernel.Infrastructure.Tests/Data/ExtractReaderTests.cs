@@ -47,7 +47,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
             Log.Debug(JsonConvert.SerializeObject(bottom5.Extract.First()));
         }
 
-        [Test]
+        // [Test]
         public void should_Read_Profile()
         {
             var siteCodes = new List<int>()
@@ -68,7 +68,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
         }
 
 
-        [Test]
+        // [Test]
         public void should_Read_Profile_Filters()
         {
             var siteCodes = new List<int>()
