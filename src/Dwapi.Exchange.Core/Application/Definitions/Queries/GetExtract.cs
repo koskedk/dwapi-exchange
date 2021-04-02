@@ -79,14 +79,16 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
                 }
                 else
                 {
-                    extract = await _extractReader.ReadProc(extractRequest, request.Page, request.PageSize);
+                    extract = AppConstants.ExtractReadMode == ReadMode.Proc
+                        ? await _extractReader.ReadProc(extractRequest, request.Page, request.PageSize)
+                        : await _extractReader.Read(extractRequest, request.Page, request.PageSize);
                 }
 
                 return Result.Success(extract);
             }
             catch (Exception e)
             {
-                Log.Error(e, $"{nameof(GetExtract)} error");
+                Log.Error(e, "GetExtract error");
                 return Result.Failure<PagedExtract>(e.Message);
             }
         }

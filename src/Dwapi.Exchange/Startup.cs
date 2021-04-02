@@ -2,6 +2,7 @@ using System;
 using Dwapi.Exchange.Core;
 using Dwapi.Exchange.Infrastructure;
 using Dwapi.Exchange.Infrastructure.Data;
+using Dwapi.Exchange.SharedKernel.Common;
 using Dwapi.Exchange.SharedKernel.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +39,16 @@ namespace Dwapi.Exchange
         public void ConfigureServices(IServiceCollection services)
         {
             var authority = Configuration["Authority"];
+
+            try
+            {
+                AppConstants.ExtractReadMode = (ReadMode) Convert.ToInt32(Configuration["ReadMode"]);
+            }
+            catch (Exception e)
+            {
+                Log.Warning("ReadMode setting could not be SET");
+            }
+
             IdentityModelEventSource.ShowPII = true;
             services.AddControllers()
                 ;//.AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; } );
