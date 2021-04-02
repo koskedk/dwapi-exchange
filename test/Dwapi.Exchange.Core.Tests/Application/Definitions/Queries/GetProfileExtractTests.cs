@@ -31,7 +31,7 @@ namespace Dwapi.Exchange.Core.Tests.Application.Definitions.Queries
             _mediator = TestInitializer.ServiceProvider.GetService<IMediator>();
         }
 
-        [Test]
+        // [Test]
         public void should_Get_Extract()
         {
             var getExtract = new GetProfileExtract("dwh","Profile",1,5);
