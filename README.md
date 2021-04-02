@@ -34,6 +34,7 @@ API implements paging of results for each data set i.e. you need to specify
 
 # Usage
 
+Request an access token
 
 ```bash
 curl -v https://data.kenyahmis.org:8443/connect/token \
@@ -42,6 +43,7 @@ curl -v https://data.kenyahmis.org:8443/connect/token \
 -u "client_id:secret" \
 -d "grant_type=client_credentials"
 ```
+Make API Request
 
 ```bash
 curl -v -X GET https://data.kenyahmis.org:9783/api/Dataset?code=PDA&name=visits&pageNumber=1&pageSize=10 \
