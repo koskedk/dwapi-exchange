@@ -1,4 +1,5 @@
 # KeHMIS II DWH Data Request API
+[![.NET](https://github.com/koskedk/dwapi-exchange/actions/workflows/dotnet.yml/badge.svg)](https://github.com/koskedk/dwapi-exchange/actions/workflows/dotnet.yml)
 # Introduction
 These APIs provides secure access to the National Data warehouse.
 
