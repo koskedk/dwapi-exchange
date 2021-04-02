@@ -11,18 +11,22 @@ namespace Dwapi.Exchange
     {
         public static void Main(string[] args)
         {
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("obs.json", optional: false)
+                .Build();
+            var seqUrl = config.GetSection("Seq").Get<string>();
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Debug)
                 .Enrich.FromLogContext()
                 .WriteTo.Console(LogEventLevel.Debug)
-                .WriteTo.File("logs/log.txt", LogEventLevel.Error, rollingInterval: RollingInterval.Day)
+                //.WriteTo.File("logs/log.txt", LogEventLevel.Error, rollingInterval: RollingInterval.Day)
+                .WriteTo.Seq(seqUrl,LogEventLevel.Warning)
                 .CreateLogger();
 
             try
             {
                 Log.Information($"Starting Dwapi.Exchange...");
-                ;
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)

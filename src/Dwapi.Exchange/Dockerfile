@@ -12,6 +12,7 @@ COPY ["src/Dwapi.Exchange.Infrastructure/Dwapi.Exchange.Infrastructure.csproj", 
 COPY ["src/Dwapi.Exchange.Core/Dwapi.Exchange.Core.csproj", "src/Dwapi.Exchange.Core/"]
 COPY ["src/Dwapi.Exchange.SharedKernel/Dwapi.Exchange.SharedKernel.csproj", "src/Dwapi.Exchange.SharedKernel/"]
 COPY ["src/Dwapi.Exchange.SharedKernel.Infrastructure/Dwapi.Exchange.SharedKernel.Infrastructure.csproj", "src/Dwapi.Exchange.SharedKernel.Infrastructure/"]
+COPY ["src/Dwapi.Exchange.Contracts/Dwapi.Exchange.Contracts.csproj", "src/Dwapi.Exchange.Contracts/"]
 RUN dotnet restore "src/Dwapi.Exchange/Dwapi.Exchange.csproj"
 COPY . .
 WORKDIR "/src/src/Dwapi.Exchange"

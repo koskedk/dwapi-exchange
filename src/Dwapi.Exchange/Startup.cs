@@ -2,14 +2,18 @@ using System;
 using Dwapi.Exchange.Core;
 using Dwapi.Exchange.Infrastructure;
 using Dwapi.Exchange.Infrastructure.Data;
+using Dwapi.Exchange.SharedKernel.Common;
 using Dwapi.Exchange.SharedKernel.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
 namespace Dwapi.Exchange
@@ -23,8 +27,8 @@ namespace Dwapi.Exchange
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(environment.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
@@ -34,14 +38,35 @@ namespace Dwapi.Exchange
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*
-            services.AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
-                .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
-            */
-            services.AddControllers();
+            var authority = Configuration["Authority"];
+
+            try
+            {
+                AppConstants.ExtractReadMode = (ReadMode) Convert.ToInt32(Configuration["ReadMode"]);
+            }
+            catch (Exception e)
+            {
+                Log.Warning("ReadMode setting could not be SET");
+            }
+
+            IdentityModelEventSource.ShowPII = true;
+            services.AddControllers()
+                ;//.AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; } );
+            services.AddSwaggerGen();
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = authority;
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddInfrastructure(Configuration);
             services.AddApplication();
-            services.AddSwaggerGen();
+
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {
@@ -66,14 +91,13 @@ namespace Dwapi.Exchange
             });
             app.UseRouting();
 
-            /*
             app.UseAuthentication();
             app.UseAuthorization();
-            */
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             EnsureMigrationOfContext<RegistryContext>(app);
-            Log.Information($"Moms.Revenue [Version {GetType().Assembly.GetName().Version}] started successfully");
+            Dapper.SqlMapper.Settings.CommandTimeout = 3600;
+            Log.Information($"Dwapi.Exchange [Version {GetType().Assembly.GetName().Version}] started successfully");
         }
 
         private static void EnsureMigrationOfContext<T>(IApplicationBuilder app) where T : BaseContext

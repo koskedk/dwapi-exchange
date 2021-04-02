@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dwapi.Exchange.SharedKernel.Model
 {
@@ -10,6 +11,9 @@ namespace Dwapi.Exchange.SharedKernel.Model
         public long RecordCount { get; set; }
         public DateTime Updated { get; set; }
         public DateTime Refreshed { get; set; }
+
+        [NotMapped]
+        public string SqlProc => $"uspSelectPaged{Name}";
 
         public string GenerateCountScript()
         {

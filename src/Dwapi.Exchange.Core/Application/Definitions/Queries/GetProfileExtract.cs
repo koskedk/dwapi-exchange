@@ -11,7 +11,7 @@ using Serilog;
 
 namespace Dwapi.Exchange.Core.Application.Definitions.Queries
 {
-    public class GetExtract : IRequest<Result<PagedExtract>>
+    public class GetProfileExtract : IRequest<Result<PagedProfileExtract>>
     {
         public string Code { get; }
         public string Name { get; }
@@ -22,7 +22,7 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
         public string Gender { get;  }
         public int Age { get;  }
 
-        public GetExtract(string code, string name, int page, int pageSize = 50,int[] siteCode=null,string[] county=null,string gender="",int age=-1)
+        public GetProfileExtract(string code, string name, int page, int pageSize = 50,int[] siteCode=null,string[] county=null,string gender="",int age=-1)
         {
             Code = code;
             Name = name;
@@ -35,9 +35,9 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
         }
     }
 
-    public class GetExtractValidator : AbstractValidator<GetExtract>
+    public class GetProfileExtractValidator : AbstractValidator<GetProfileExtract>
     {
-        public GetExtractValidator()
+        public GetProfileExtractValidator()
         {
             RuleFor(x => x.Code).NotEmpty();
             RuleFor(x => x.Name).NotEmpty();
@@ -46,18 +46,18 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
         }
     }
 
-    public class GetExtractHandler : IRequestHandler<GetExtract, Result<PagedExtract>>
+    public class GetProfileExtractHandler : IRequestHandler<GetProfileExtract, Result<PagedProfileExtract>>
     {
         private readonly IRegistryRepository _repository;
         private readonly IExtractReader _extractReader;
 
-        public GetExtractHandler(IRegistryRepository repository, IExtractReader extractReader)
+        public GetProfileExtractHandler(IRegistryRepository repository, IExtractReader extractReader)
         {
             _extractReader = extractReader;
             _repository = repository;
         }
 
-        public async Task<Result<PagedExtract>> Handle(GetExtract request, CancellationToken cancellationToken)
+        public async Task<Result<PagedProfileExtract>> Handle(GetProfileExtract request, CancellationToken cancellationToken)
         {
             try
             {
@@ -66,30 +66,26 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
                 if (null == registry)
                     throw new Exception("Request does not exist");
 
+                var mainExtractRequest = registry.GetMainRequest();
+
+                if (null == mainExtractRequest)
+                    throw new Exception("Main Request does not exist");
+
                 var extractRequest = registry.GetRequestByDef(request.Name);
 
                 if (null == extractRequest)
                     throw new Exception("Request does not exist");
 
-                PagedExtract extract;
+                PagedProfileExtract extract;
 
-                if (extractRequest.Name == "Profile")
-                {
-                    extract = await _extractReader.ReadProfileFilter(extractRequest, request.Page, request.PageSize,request.SiteCode,request.County,request.Gender,request.Age);
-                }
-                else
-                {
-                    extract = AppConstants.ExtractReadMode == ReadMode.Proc
-                        ? await _extractReader.ReadProc(extractRequest, request.Page, request.PageSize)
-                        : await _extractReader.Read(extractRequest, request.Page, request.PageSize);
-                }
+                extract = await _extractReader.ReadProfileFilterExpress(mainExtractRequest,extractRequest, request.Page, request.PageSize,request.SiteCode,request.County,request.Gender,request.Age);
 
                 return Result.Success(extract);
             }
             catch (Exception e)
             {
-                Log.Error(e, "GetExtract error");
-                return Result.Failure<PagedExtract>(e.Message);
+                Log.Error(e, $"{nameof(GetExtract)} error");
+                return Result.Failure<PagedProfileExtract>(e.Message);
             }
         }
     }

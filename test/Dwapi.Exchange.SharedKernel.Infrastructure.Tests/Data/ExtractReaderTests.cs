@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dwapi.Exchange.SharedKernel.Infrastructure.Tests.TestArtifacts;
 using Dwapi.Exchange.SharedKernel.Interfaces;
@@ -12,12 +14,15 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
     public class ExtractReaderTests
     {
         private IExtractReader _reader;
-        private SampleDefinition _definition;
+        private SampleDefinition _definition,_mainDefinition, _profileDefinition;
+
 
         [SetUp]
         public void SetUp()
         {
             _definition = TestData.GenerateSampleDefinition();
+            _mainDefinition = TestData.GenerateMainSampleDefinition();
+            _profileDefinition = TestData.GenerateSampleProfileDefinition();
             _reader = TestInitializer.ServiceProvider.GetService<IExtractReader>();
         }
 
@@ -40,6 +45,62 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
             Assert.AreEqual(5,bottom5.TotalItemCount);
             Log.Debug(bottom5.ToString());
             Log.Debug(JsonConvert.SerializeObject(bottom5.Extract.First()));
+        }
+
+        [Test]
+        public void should_Read_Profile()
+        {
+            var siteCodes = new List<int>()
+            {
+                101,13634
+            };
+            var counties = new List<string>();
+            var top5 = _reader.ReadProfile(_definition,1, 5,siteCodes.ToArray(),counties.ToArray()).Result;
+            Assert.AreEqual(1,top5.PageNumber);
+            Assert.AreEqual(5,top5.PageSize);
+            Assert.AreEqual(2,top5.PageCount);
+            Assert.AreEqual(5,top5.TotalItemCount);
+            Log.Debug(top5.ToString());
+            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
+
+
+
+        }
+
+
+        [Test]
+        public void should_Read_Profile_Filters()
+        {
+            var siteCodes = new List<int>()
+            {
+                101
+            };
+            var counties = new List<string>();
+            var top5 = _reader.ReadProfileFilter(_definition,1, 5,siteCodes.ToArray(),counties.ToArray(),"Male",10).Result;
+            Assert.AreEqual(1,top5.PageNumber);
+            Assert.AreEqual(5,top5.PageSize);
+            Assert.AreEqual(2,top5.PageCount);
+            Assert.AreEqual(5,top5.TotalItemCount);
+            Log.Debug(top5.ToString());
+            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
+
+///DataSource=/Users/koskedk/Projects/hmis/dwh/dwapi/exchange/test/Dwapi.Exchange.SharedKernel.Infrastructure.Tests/bin/Debug/netcoreapp3.1/TestArtifacts/Database/source.db
+
+        }
+
+        [Test]
+        public void should_Read_Profile_Filters_Slapper()
+        {
+            var top5 = _reader.ReadProfileFilterExpress(_mainDefinition, _profileDefinition,1, 4).Result;
+            Assert.AreEqual(1,top5.PageNumber);
+            Assert.AreEqual(4,top5.PageSize);
+            Assert.AreEqual(1,top5.PageCount);
+            Assert.AreEqual(4,top5.TotalItemCount);
+            Log.Debug(top5.ToString());
+            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
+
+            ///DataSource=/Users/koskedk/Projects/hmis/dwh/dwapi/exchange/test/Dwapi.Exchange.SharedKernel.Infrastructure.Tests/bin/Debug/netcoreapp3.1/TestArtifacts/Database/source.db
+
         }
 
         [Test]
