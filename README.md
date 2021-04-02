@@ -43,7 +43,7 @@ curl -v https://data.kenyahmis.org:8443/connect/token \
 -u "client_id:secret" \
 -d "grant_type=client_credentials"
 ```
-Make API Request for a dataset specifying its **code** and **name** e.g the example below shows request to a dataset  with _code PDA and name visits_
+Make API Request for a dataset specifying its **code** and **name**
 
 ```bash
 curl -v -X GET https://data.kenyahmis.org:9783/api/Dataset?code=PDA&name=visits&pageNumber=1&pageSize=10 \
