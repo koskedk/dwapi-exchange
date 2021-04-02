@@ -31,3 +31,20 @@ https://data.kenyahmis.org:8443/.well-known/openid-configuration
 Limit to the number of requests per user will be implemented.
 API implements paging of results for each data set i.e. you need to specify 
 **PageSize** _(Number of records and you need)_ and **PageNumber**
+
+# Usage
+
+
+```bash
+curl -v https://data.kenyahmis.org:8443/connect/token \
+-H "Accept: application/json" \
+-H "Accept-Language: en_US" \
+-u "client_id:secret" \
+-d "grant_type=client_credentials"
+```
+
+```bash
+curl -v -X GET https://data.kenyahmis.org:9783/api/Dataset?code=PDA&name=visits&pageNumber=1&pageSize=10 \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <Access-Token>"
+```
