@@ -68,6 +68,68 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             }
         }
 
+        public async Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null)
+        {
+            pageNumber = pageNumber < 0 ? 1 : pageNumber;
+            pageSize = pageSize < 0 ? 1 : pageSize;
+
+            var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
+
+            var sql = $"{definition.SqlScript}";
+
+            var sqlPaging = @"
+                 OFFSET @Offset ROWS 
+                 FETCH NEXT @PageSize ROWS ONLY
+            ";
+
+            if (_extractDataSource.DatabaseType == DatabaseType.SqLite)
+            {
+                sqlPaging = @" LIMIT @PageSize OFFSET @Offset;";
+            }
+
+            if (null!=siteCode && siteCode.Any())
+            {
+                sql = $"{sql} WHERE FacilityCode IN @siteCode";
+            }
+
+            sql = $"{sql} ORDER BY LiveRowId {sqlPaging}";
+
+
+            try
+            {
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+
+                    IEnumerable<dynamic> results;
+                    if (null!=siteCode && siteCode.Any())
+                    {
+                        results = await cn.QueryAsync(sql, new
+                        {
+                            Offset = (pageNumber - 1) * pageSize,
+                            PageSize = pageSize,
+                            siteCode=siteCode
+                        });
+                    }
+                    else
+                    {
+                        results = await cn.QueryAsync(sql, new
+                        {
+                            Offset = (pageNumber - 1) * pageSize,
+                            PageSize = pageSize
+                        });
+                    }
+
+                    return new PagedExtract(pageNumber, pageSize, pageCount, results.ToList());
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract", e);
+                throw;
+            }
+        }
+
         public async Task<PagedExtract> ReadProc(ExtractDefinition definition, int pageNumber, int pageSize)
         {
             pageNumber = pageNumber < 0 ? 1 : pageNumber;
@@ -108,8 +170,6 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
 
             var sql = $"{definition.SqlScript}";
-
-
 
 
             try

@@ -14,7 +14,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
     public class ExtractReaderTests
     {
         private IExtractReader _reader;
-        private SampleDefinition _definition,_mainDefinition, _profileDefinition;
+        private SampleDefinition _definition,_mainDefinition, _profileDefinition,_adhocDefination;
 
 
         [SetUp]
@@ -22,6 +22,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
         {
             _definition = TestData.GenerateSampleDefinition();
             _mainDefinition = TestData.GenerateMainSampleDefinition();
+            _adhocDefination = TestData.GenerateAdhocSampleDefinition();
             _profileDefinition = TestData.GenerateSampleProfileDefinition();
             _reader = TestInitializer.ServiceProvider.GetService<IExtractReader>();
         }
@@ -46,7 +47,22 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
             Log.Debug(bottom5.ToString());
             Log.Debug(JsonConvert.SerializeObject(bottom5.Extract.First()));
         }
+        [Test]
+        public void should_Read_Filters()
+        {
+            var siteCodes = new List<int>()
+            {
+                101,13634,15788
+            };
+            var counties = new List<string>();
+            var top5 = _reader.Read(_adhocDefination,1, 5,null).Result;
+            Assert.True(top5.TotalItemCount>0);
+            Log.Debug(top5.ToString());
+            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
 
+            ///DataSource=/Users/koskedk/Projects/hmis/dwh/dwapi/exchange/test/Dwapi.Exchange.SharedKernel.Infrastructure.Tests/bin/Debug/netcoreapp3.1/TestArtifacts/Database/source.db
+
+        }
         // [Test]
         public void should_Read_Profile()
         {

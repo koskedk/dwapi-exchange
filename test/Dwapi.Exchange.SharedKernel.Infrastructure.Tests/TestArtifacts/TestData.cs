@@ -40,6 +40,19 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.TestArtifacts
                 Refreshed = DateTime.Now
             };
         }
+
+        public static SampleDefinition GenerateAdhocSampleDefinition()
+        {
+            return new SampleDefinition
+            {
+                Name = @"Patient Extracts",
+                Description = @"All Patients",
+                SqlScript = @"select * from CTPatient",
+                RecordCount = 4,
+                Updated = DateTime.Now.AddHours(1),
+                Refreshed = DateTime.Now
+            };
+        }
         public static SampleDefinition GenerateSampleProfileDefinition()
         {
             return new SampleDefinition
