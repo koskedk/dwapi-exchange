@@ -1,0 +1,13 @@
+using Microsoft.AspNetCore.Mvc;
+
+namespace Dwapi.Exchange.Models
+{
+    public class EmrReqDto
+    {
+        [FromQuery(Name = "code")] public string code { get; set; }
+        [FromQuery(Name = "name")] public string name { get; set; }
+        [FromQuery(Name = "pageNumber")] public int pageNumber { get; set; }
+        [FromQuery(Name = "pageSize")] public int pageSize { get; set; }
+        [FromQuery(Name = "siteCode")] public int[] siteCode { get; set; }
+    }
+}

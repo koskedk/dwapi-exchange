@@ -12,7 +12,7 @@ using Serilog;
 
 namespace Dwapi.Exchange.Controllers
 {
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class DatasetController : ControllerBase
@@ -27,7 +27,7 @@ namespace Dwapi.Exchange.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Get(string code, string name, int pageNumber, int pageSize,int[] siteCode)
+        public async Task<ActionResult> Get([FromQuery] EmrReqDto req)
         {
             #region Move to middleware
 
@@ -53,7 +53,7 @@ namespace Dwapi.Exchange.Controllers
             try
             {
 
-                var request = new GetExtract(code, name, pageNumber, pageSize,siteCode);
+                var request = new GetExtract(req.code, req.name, req.pageNumber, req.pageSize,req.siteCode);
 
                 var results = await _mediator.Send(request);
 
@@ -71,7 +71,7 @@ namespace Dwapi.Exchange.Controllers
         }
 
         [HttpGet("Profile")]
-        public async Task<ActionResult> Get([FromQuery] ReqDto req)
+        public async Task<ActionResult> GetProfile([FromQuery] ReqDto req)
         {
             #region Move to middleware
 
