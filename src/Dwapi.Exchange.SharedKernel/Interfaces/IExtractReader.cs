@@ -14,7 +14,7 @@ namespace Dwapi.Exchange.SharedKernel.Interfaces
         Task<PagedExtract> ReadProfileFilter(ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string[] county = null, string gender="", int age=-1);
         Task<PagedProfileExtract> ReadProfileFilterExpress(ExtractDefinition mainDefinition,ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string[] county = null, string gender="", int age=-1);
         Task<long> GetCount(ExtractDefinition definition);
-        Task<long> GetCountFrom(ExtractDefinition definition,string fromSource);
+        Task<long> GetCountFrom(ExtractDefinition definition,string fromSource,int[] siteCode);
         Task Initialize(ExtractDefinition definition);
     }
 }

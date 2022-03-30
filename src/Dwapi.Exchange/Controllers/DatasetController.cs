@@ -12,7 +12,7 @@ using Serilog;
 
 namespace Dwapi.Exchange.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class DatasetController : ControllerBase

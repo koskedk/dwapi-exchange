@@ -125,5 +125,13 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
             var top5 = _reader.GetCount(_definition).Result;
             Assert.AreEqual(10,top5);
         }
+
+        [Test]
+        public void should_Get_Count_Frm()
+        {
+            var sql = $"{_definition.SqlScript} limit 2";
+            var top5 = _reader.GetCountFrom(_definition, sql,new []{1}).Result;
+            Assert.AreEqual(2, top5);
+        }
     }
 }

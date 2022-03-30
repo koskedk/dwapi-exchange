@@ -90,6 +90,8 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             if (null!=siteCode && siteCode.Any())
             {
                 sql = $"{sql} WHERE FacilityCode IN @siteCode"; reCount = true;
+                var count =await GetCountFrom(definition, sql,siteCode);  
+                pageCount = Utils.PageCount(pageSize, count);
             }
 
             sql = $"{sql} ORDER BY LiveRowId {sqlPaging}";
@@ -651,7 +653,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             }
         }
 
-        public async Task<long> GetCountFrom(ExtractDefinition definition,string fromSource)
+        public async Task<long> GetCountFrom(ExtractDefinition definition,string fromSource,int[] siteCode)
         {
             try
             {
@@ -659,7 +661,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
                 using (var cn = GetConnection())
                 {
                     cn.Open();
-                    var results = await cn.QueryAsync<long>(sql);
+                    var results = await cn.QueryAsync<long>(sql,new {siteCode});
 
                     var counts = results.ToList();
                     if (counts.Any())
