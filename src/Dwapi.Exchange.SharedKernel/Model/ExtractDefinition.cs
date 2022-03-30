@@ -21,6 +21,13 @@ namespace Dwapi.Exchange.SharedKernel.Model
                 select count(LiveRowId) Count
                 from ({SqlScript})x";
         }
+        
+        public string GenerateCountScript(string fromSource)
+        {
+            return @$"
+                select count(LiveRowId) Count
+                from ({fromSource})x";
+        }
 
         public override string ToString()
         {

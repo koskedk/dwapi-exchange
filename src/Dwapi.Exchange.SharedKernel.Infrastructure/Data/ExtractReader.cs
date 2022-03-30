@@ -72,7 +72,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
         {
             pageNumber = pageNumber < 0 ? 1 : pageNumber;
             pageSize = pageSize < 0 ? 1 : pageSize;
-
+            bool reCount = false;
             var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
 
             var sql = $"{definition.SqlScript}";
@@ -89,7 +89,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
 
             if (null!=siteCode && siteCode.Any())
             {
-                sql = $"{sql} WHERE FacilityCode IN @siteCode";
+                sql = $"{sql} WHERE FacilityCode IN @siteCode"; reCount = true;
             }
 
             sql = $"{sql} ORDER BY LiveRowId {sqlPaging}";
@@ -651,6 +651,29 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             }
         }
 
+        public async Task<long> GetCountFrom(ExtractDefinition definition,string fromSource)
+        {
+            try
+            {
+                var sql = definition.GenerateCountScript(fromSource);
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+                    var results = await cn.QueryAsync<long>(sql);
+
+                    var counts = results.ToList();
+                    if (counts.Any())
+                        return counts.First();
+                    return 0;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract count", e);
+                throw;
+            }
+        }
+        
         public Task Initialize(ExtractDefinition definition)
         {
             throw new NotImplementedException();
