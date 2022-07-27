@@ -12,10 +12,18 @@ namespace Dwapi.Exchange.Core
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services, List<Assembly> mediatrAssemblies = null)
+        public static IServiceCollection AddApplication(this IServiceCollection services, List<Assembly> mediatrAssemblies = null, List<Assembly> mapperAssemblies = null)
         {
-            services.AddAutoMapper(typeof(RegistryProfile));
-
+            if (null != mapperAssemblies)
+            {
+                mapperAssemblies.Add(typeof(RegistryProfile).Assembly);
+                services.AddAutoMapper(mediatrAssemblies.ToArray());
+            }
+            else
+            {
+                services.AddAutoMapper(typeof(RegistryProfile));
+            }
+            
             if (null != mediatrAssemblies)
             {
                 mediatrAssemblies.Add(typeof(GetExtract).Assembly);

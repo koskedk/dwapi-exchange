@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Intrinsics.X86;
@@ -33,13 +34,17 @@ namespace Dwapi.Exchange.Core.Tests.Application.Definitions.Queries
             _mediator = TestInitializer.ServiceProvider.GetService<IMediator>();
         }
 
-        [TestCase("dwh","predictions",1,5,12602,5,"")]
-        [TestCase("dwh","predictions",1,5,12602,0,"xx")]
-        public void should_Get_Emr_Extract(string code,string name,int pageNumber,int pageSize,int siteCode,int total, string ccc)
+        [TestCase("dwh","predictions",1,5,12602,5,"","")]
+        [TestCase("dwh","predictions",1,5,12602,1,"1260200001","")]
+        [TestCase("dwh","predictions",1,5,12602,0,"","2022-07-28")]
+        [TestCase("dwh","predictions",1,5,12602,3,"","2022-07-26")]
+
+        public void should_Get_Emr_Extract(string code,string name,int pageNumber,int pageSize,int siteCode,int total, string ccc,string evalDate)
         {
+            DateTime.TryParse(evalDate, out var evaluationDate);
             var request = new EmrRequestDto
             {
-                Code = code, Name = name, PageNumber = pageNumber, PageSize = pageSize,SiteCode =new []{siteCode} ,CccNumber = ccc
+                Code = code, Name = name, PageNumber = pageNumber, PageSize = pageSize,SiteCode =new []{siteCode} ,CccNumber = ccc,EvaluationDate = evaluationDate
             };
             var getExtract = new GetEmrExtract(request);
 
@@ -48,7 +53,8 @@ namespace Dwapi.Exchange.Core.Tests.Application.Definitions.Queries
             var top5 = result.Value;;
             Assert.AreEqual(total,top5.TotalItemCount);
             Log.Debug(top5.ToString());
-            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
+            if(top5.Extract.Any())
+                Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
         }
     }
 }

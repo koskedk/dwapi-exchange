@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Dwapi.Exchange.Core;
+using Dwapi.Exchange.Core.Domain.Definitions.Dtos;
 using Dwapi.Exchange.Infrastructure;
 using Dwapi.Exchange.Infrastructure.Data;
 using Dwapi.Exchange.SharedKernel.Common;
@@ -65,9 +68,7 @@ namespace Dwapi.Exchange
                 });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddInfrastructure(Configuration);
-            services.AddApplication();
-
-
+            services.AddApplication(null, new List<Assembly> { typeof(ExchangeProfile).Assembly });
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders =

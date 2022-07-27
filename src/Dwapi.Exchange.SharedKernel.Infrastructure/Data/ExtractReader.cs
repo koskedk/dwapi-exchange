@@ -161,15 +161,15 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
                         whereVals.siteCode = siteCode;
                     }
 
-                    if (null != cccNumber && cccNumber.Any())
+                    if (!string.IsNullOrWhiteSpace(cccNumber))
                     {
-                        whereList.Add($"PatientCccNumber IN @cccNumber");
+                        whereList.Add($"PatientCccNumber = @cccNumber");
                         whereVals.cccNumber = cccNumber;
                     }
 
-                    if (evaluationDate.HasValue)
+                    if (evaluationDate.HasValue && evaluationDate>new DateTime(1901,1,1))
                     {
-                        whereList.Add($"evaluationDate > @toDate");
+                        whereList.Add($"evaluationDate > @evaluationDate");
                         whereVals.evaluationDate = evaluationDate.Value.Date;
                     }
                    
