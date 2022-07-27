@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dwapi.Exchange.SharedKernel.Common;
@@ -9,6 +10,7 @@ namespace Dwapi.Exchange.SharedKernel.Interfaces
     {
         Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber,int pageSize);
         Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber,int pageSize,int[] siteCode = null);
+        Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber,int pageSize,DateTime? evaluationDate,int[] siteCode = null,string cccNumber="");
         Task<PagedExtract> ReadProc(ExtractDefinition definition, int pageNumber,int pageSize);
         Task<PagedExtract> ReadProfile(ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string[] county = null);
         Task<PagedExtract> ReadProfileFilter(ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string[] county = null, string gender="", int age=-1);

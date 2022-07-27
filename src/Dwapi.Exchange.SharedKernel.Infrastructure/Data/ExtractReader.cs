@@ -132,6 +132,79 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             }
         }
 
+        public async Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber, int pageSize, DateTime? evaluationDate,
+            int[] siteCode = null, string cccNumber = "")
+        {
+            
+           var whereList=new List<string>();
+            dynamic whereVals = new ExpandoObject();
+            pageNumber = pageNumber < 0 ? 1 : pageNumber;
+            pageSize = pageSize < 0 ? 1 : pageSize;
+
+            var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
+
+            var sql = $"{definition.SqlScript}";
+
+            whereVals.Offset = (pageNumber - 1) * pageSize;
+            whereVals.PageSize = pageSize;
+
+            try
+            {
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+
+
+                    if (null != siteCode && siteCode.Any())
+                    {
+                        whereList.Add($"FacilityCode IN @siteCode");
+                        whereVals.siteCode = siteCode;
+                    }
+
+                    if (null != cccNumber && cccNumber.Any())
+                    {
+                        whereList.Add($"PatientCccNumber IN @cccNumber");
+                        whereVals.cccNumber = cccNumber;
+                    }
+
+                    if (evaluationDate.HasValue)
+                    {
+                        whereList.Add($"evaluationDate > @toDate");
+                        whereVals.evaluationDate = evaluationDate.Value.Date;
+                    }
+                   
+                    if(whereList.Any())
+                        sql = $"{sql} WHERE {string.Join(" AND ",whereList)} ";
+
+                    sql = $"{sql} ORDER BY LiveRowId ";
+
+                    var sqlPaging = @"
+                         OFFSET @Offset ROWS 
+                         FETCH NEXT @PageSize ROWS ONLY
+                    ";
+
+
+                    if (_extractDataSource.DatabaseType == DatabaseType.SqLite)
+                    {
+                        sqlPaging = @" LIMIT @PageSize OFFSET @Offset;";
+                    }
+
+                    sql = $"{sql}{sqlPaging}";
+
+
+                    IEnumerable<dynamic> results = new List<dynamic>();
+                    results = await cn.QueryAsync(sql, (object) whereVals);
+
+                    return new PagedExtract(pageNumber, pageSize, pageCount, results.ToList());
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract", e);
+                throw;
+            }
+        }
+
         public async Task<PagedExtract> ReadProc(ExtractDefinition definition, int pageNumber, int pageSize)
         {
             pageNumber = pageNumber < 0 ? 1 : pageNumber;
