@@ -1,7 +1,7 @@
 using AutoMapper;
-using Dwapi.Exchange.Models;
+using Dwapi.Exchange.Core.Domain.Definitions.Dtos;
 
-namespace Dwapi.Exchange.Core.Domain.Definitions.Dtos
+namespace Dwapi.Exchange.Models
 {
     public class ExchangeProfile:Profile
     {

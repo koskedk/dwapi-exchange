@@ -14,7 +14,7 @@ using Serilog;
 
 namespace Dwapi.Exchange.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class DatasetController : ControllerBase
@@ -23,10 +23,11 @@ namespace Dwapi.Exchange.Controllers
         private readonly IHttpContextAccessor _accessor;
         private readonly IMapper _mapper;
 
-        public DatasetController(IMediator mediator, IHttpContextAccessor accessor)
+        public DatasetController(IMediator mediator, IHttpContextAccessor accessor, IMapper mapper)
         {
             _mediator = mediator;
             _accessor = accessor;
+            _mapper = mapper;
         }
 
         [HttpGet]

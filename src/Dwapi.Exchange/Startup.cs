@@ -5,6 +5,7 @@ using Dwapi.Exchange.Core;
 using Dwapi.Exchange.Core.Domain.Definitions.Dtos;
 using Dwapi.Exchange.Infrastructure;
 using Dwapi.Exchange.Infrastructure.Data;
+using Dwapi.Exchange.Models;
 using Dwapi.Exchange.SharedKernel.Common;
 using Dwapi.Exchange.SharedKernel.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;

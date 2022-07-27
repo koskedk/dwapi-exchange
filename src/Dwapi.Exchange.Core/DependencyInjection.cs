@@ -17,7 +17,7 @@ namespace Dwapi.Exchange.Core
             if (null != mapperAssemblies)
             {
                 mapperAssemblies.Add(typeof(RegistryProfile).Assembly);
-                services.AddAutoMapper(mediatrAssemblies.ToArray());
+                services.AddAutoMapper(mapperAssemblies.ToArray());
             }
             else
             {
