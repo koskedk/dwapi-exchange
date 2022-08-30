@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,7 @@ namespace Dwapi.Exchange
     {
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
+        public bool DisableAuth { get; set; }
 
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
@@ -43,7 +45,7 @@ namespace Dwapi.Exchange
         public void ConfigureServices(IServiceCollection services)
         {
             var authority = Configuration["Authority"];
-
+            DisableAuth = string.IsNullOrWhiteSpace(authority);
             try
             {
                 AppConstants.ExtractReadMode = (ReadMode) Convert.ToInt32(Configuration["ReadMode"]);
@@ -54,7 +56,12 @@ namespace Dwapi.Exchange
             }
 
             IdentityModelEventSource.ShowPII = true;
-            services.AddControllers()
+
+            if (DisableAuth)
+                services.AddControllers();
+            else
+               services.AddControllers(opt => opt.Filters.Add(new AuthorizeFilter()));
+
                 ;//.AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; } );
             services.AddSwaggerGen();
             services.AddAuthentication("Bearer")
