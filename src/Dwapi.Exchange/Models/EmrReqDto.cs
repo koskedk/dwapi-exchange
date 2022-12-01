@@ -12,5 +12,6 @@ namespace Dwapi.Exchange.Models
         [FromQuery(Name = "siteCode")] public int[] siteCode { get; set; }
         [FromQuery(Name = "evaluationDate")] public DateTime? evaluationDate { get; set; }
         [FromQuery(Name = "cccNumber")] public string cccNumber { get; set; }
+        [FromQuery(Name = "recencyId")] public string recencyId { get; set; }
     }
 }

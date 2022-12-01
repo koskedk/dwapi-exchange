@@ -133,7 +133,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
         }
 
         public async Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber, int pageSize, DateTime? evaluationDate,
-            int[] siteCode = null, string cccNumber = "")
+            int[] siteCode = null, string cccNumber = "", string recencyId = "")
         {
             
            var whereList=new List<string>();
@@ -172,8 +172,14 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
                         whereList.Add($"evaluationDate > @evaluationDate");
                         whereVals.evaluationDate = evaluationDate.Value.Date;
                     }
-                   
-                    if(whereList.Any())
+
+                    if (!string.IsNullOrWhiteSpace(recencyId))
+                    {
+                        whereList.Add($"recencyId = @recencyId");
+                        whereVals.recencyId = recencyId;
+                    }
+
+                    if (whereList.Any())
                         sql = $"{sql} WHERE {string.Join(" AND ",whereList)} ";
 
                     sql = $"{sql} ORDER BY LiveRowId ";
