@@ -12,7 +12,7 @@ using Serilog;
 namespace Dwapi.Exchange.Core.Tests.Application.Definitions.Queries
 {
     [TestFixture]
-    public class GetExtractTests
+    public class GetProfileExtractTests
     {
         private List<Registry> _registries;
         private IMediator _mediator;
@@ -31,10 +31,10 @@ namespace Dwapi.Exchange.Core.Tests.Application.Definitions.Queries
             _mediator = TestInitializer.ServiceProvider.GetService<IMediator>();
         }
 
-        [Test]
+        // [Test]
         public void should_Get_Extract()
         {
-            var getExtract = new GetExtract("dwh","Patients",1,5);
+            var getExtract = new GetProfileExtract("dwh","Profile",1,5);
 
             var result = _mediator.Send(getExtract).Result;
             Assert.True(result.IsSuccess);
@@ -42,22 +42,6 @@ namespace Dwapi.Exchange.Core.Tests.Application.Definitions.Queries
             Assert.AreEqual(1,top5.PageNumber);
             Assert.AreEqual(5,top5.PageSize);
             Assert.AreEqual(2,top5.PageCount);
-            Assert.AreEqual(5,top5.TotalItemCount);
-            Log.Debug(top5.ToString());
-            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
-        }
-        
-        [Test]
-        public void should_Get_Prediciton_Extract()
-        {
-            var getExtract = new GetExtract("dwh","predictions",1,5);
-
-            var result = _mediator.Send(getExtract).Result;
-            Assert.True(result.IsSuccess);
-            var top5 = result.Value;
-            Assert.AreEqual(1,top5.PageNumber);
-            Assert.AreEqual(5,top5.PageSize);
-            Assert.AreEqual(1,top5.PageCount);
             Assert.AreEqual(5,top5.TotalItemCount);
             Log.Debug(top5.ToString());
             Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));

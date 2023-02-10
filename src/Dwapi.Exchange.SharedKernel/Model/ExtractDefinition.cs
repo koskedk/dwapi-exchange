@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dwapi.Exchange.SharedKernel.Model
 {
@@ -11,11 +12,21 @@ namespace Dwapi.Exchange.SharedKernel.Model
         public DateTime Updated { get; set; }
         public DateTime Refreshed { get; set; }
 
+        [NotMapped]
+        public string SqlProc => $"uspSelectPaged{Name}";
+
         public string GenerateCountScript()
         {
             return @$"
                 select count(LiveRowId) Count
                 from ({SqlScript})x";
+        }
+        
+        public string GenerateCountScript(string fromSource)
+        {
+            return @$"
+                select count(LiveRowId) Count
+                from ({fromSource})x";
         }
 
         public override string ToString()

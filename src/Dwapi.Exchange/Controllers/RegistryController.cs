@@ -10,7 +10,6 @@ using Serilog;
 
 namespace Dwapi.Exchange.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class RegistryController : ControllerBase

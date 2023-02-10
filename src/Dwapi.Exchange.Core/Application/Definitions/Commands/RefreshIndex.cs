@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
@@ -54,8 +55,25 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Commands
 
                 foreach (var registryExtract in registry.ExtractRequests)
                 {
-                    registryExtract.RecordCount = await _extractReader.GetCount(registryExtract);
-                    registryExtract.Refreshed = DateTime.Now;
+                    if (registryExtract.Name == "Profile")
+                    {
+                        var pE = registry.ExtractRequests.FirstOrDefault(x => x.Name == "Patients");
+                        if (null != pE)
+                        {
+                            registryExtract.RecordCount = pE.RecordCount;
+                            registryExtract.Refreshed = DateTime.Now;
+                        }
+                        else
+                        {
+                            registryExtract.RecordCount = 0;
+                            registryExtract.Refreshed = DateTime.Now;
+                        }
+                    }
+                    else
+                    {
+                        registryExtract.RecordCount = await _extractReader.GetCount(registryExtract);
+                        registryExtract.Refreshed = DateTime.Now;
+                    }
                 }
 
                 await _repository.UpdateAsync(registry);

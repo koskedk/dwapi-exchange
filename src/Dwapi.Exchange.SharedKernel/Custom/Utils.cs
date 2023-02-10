@@ -12,8 +12,10 @@ namespace Dwapi.Exchange.SharedKernel.Custom
                 {
                     return 1;
                 }
+
                 return (int) Math.Ceiling(totalRecords / (double) batchSize);
             }
+
             return 0;
         }
     }

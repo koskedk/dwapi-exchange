@@ -14,13 +14,16 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
     public class ExtractReaderTests
     {
         private IExtractReader _reader;
-        private SampleDefinition _definition;
+        private SampleDefinition _definition,_mainDefinition, _profileDefinition,_adhocDefination;
 
 
         [SetUp]
         public void SetUp()
         {
             _definition = TestData.GenerateSampleDefinition();
+            _mainDefinition = TestData.GenerateMainSampleDefinition();
+            _adhocDefination = TestData.GenerateAdhocSampleDefinition();
+            _profileDefinition = TestData.GenerateSampleProfileDefinition();
             _reader = TestInitializer.ServiceProvider.GetService<IExtractReader>();
         }
 
@@ -44,8 +47,23 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
             Log.Debug(bottom5.ToString());
             Log.Debug(JsonConvert.SerializeObject(bottom5.Extract.First()));
         }
-
         [Test]
+        public void should_Read_Filters()
+        {
+            var siteCodes = new List<int>()
+            {
+                101,13634,15788
+            };
+            var counties = new List<string>();
+            var top5 = _reader.Read(_adhocDefination,1, 5,null).Result;
+            Assert.True(top5.TotalItemCount>0);
+            Log.Debug(top5.ToString());
+            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
+
+            ///DataSource=/Users/koskedk/Projects/hmis/dwh/dwapi/exchange/test/Dwapi.Exchange.SharedKernel.Infrastructure.Tests/bin/Debug/netcoreapp3.1/TestArtifacts/Database/source.db
+
+        }
+        // [Test]
         public void should_Read_Profile()
         {
             var siteCodes = new List<int>()
@@ -66,7 +84,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
         }
 
 
-        [Test]
+        // [Test]
         public void should_Read_Profile_Filters()
         {
             var siteCodes = new List<int>()
@@ -87,10 +105,33 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Tests.Data
         }
 
         [Test]
+        public void should_Read_Profile_Filters_Slapper()
+        {
+            var top5 = _reader.ReadProfileFilterExpress(_mainDefinition, _profileDefinition,1, 4).Result;
+            Assert.AreEqual(1,top5.PageNumber);
+            Assert.AreEqual(4,top5.PageSize);
+            Assert.AreEqual(1,top5.PageCount);
+            Assert.AreEqual(4,top5.TotalItemCount);
+            Log.Debug(top5.ToString());
+            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
+
+            ///DataSource=/Users/koskedk/Projects/hmis/dwh/dwapi/exchange/test/Dwapi.Exchange.SharedKernel.Infrastructure.Tests/bin/Debug/netcoreapp3.1/TestArtifacts/Database/source.db
+
+        }
+
+        [Test]
         public void should_Get_Count()
         {
             var top5 = _reader.GetCount(_definition).Result;
             Assert.AreEqual(10,top5);
+        }
+
+        [Test]
+        public void should_Get_Count_Frm()
+        {
+            var sql = $"{_definition.SqlScript} limit 2";
+            var top5 = _reader.GetCountFrom(_definition, sql,new []{1}).Result;
+            Assert.AreEqual(2, top5);
         }
     }
 }

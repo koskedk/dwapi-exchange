@@ -17,6 +17,11 @@ namespace Dwapi.Exchange.Core.Domain.Definitions
             return ExtractRequests.FirstOrDefault(x => x.Name.ToLower() == defName.ToLower());
         }
 
+        public ExtractRequest GetMainRequest()
+        {
+            return ExtractRequests.FirstOrDefault(x => x.Name.ToLower() == "Patients".ToLower());
+        }
+
         public void AddRequest(ExtractRequest request)
         {
             request.RegistryId = Id;
