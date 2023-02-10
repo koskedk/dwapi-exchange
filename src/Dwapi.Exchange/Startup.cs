@@ -35,6 +35,8 @@ namespace Dwapi.Exchange
                 .SetBasePath(environment.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
+                .AddJsonFile("serilog.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"serilog.{environment.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
@@ -87,6 +89,7 @@ namespace Dwapi.Exchange
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSerilogRequestLogging();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
