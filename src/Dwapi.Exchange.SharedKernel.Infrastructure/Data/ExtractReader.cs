@@ -133,7 +133,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
         }
 
         public async Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber, int pageSize, DateTime? evaluationDate,
-            int[] siteCode = null, string cccNumber = "", string recencyId = "")
+            int[] siteCode = null, string cccNumber = "", string recencyId = "", string[] indicatorName = null, int[] period = null)
         {
             
            var whereList=new List<string>();
@@ -178,6 +178,19 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
                         whereList.Add($"recencyId = @recencyId");
                         whereVals.recencyId = recencyId;
                     }
+
+                    if (null != indicatorName && indicatorName.Any())
+                    {
+                        whereList.Add($"indicatorName IN @indicatorName");
+                        whereVals.indicatorName = indicatorName;
+                    }
+
+                    if (null != period && period.Any())
+                    {
+                        whereList.Add($"period IN @period");
+                        whereVals.period = period;
+                    }
+                    Console.WriteLine(whereList);
 
                     if (whereList.Any())
                         sql = $"{sql} WHERE {string.Join(" AND ",whereList)} ";
@@ -595,6 +608,78 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
                     }
                     return new PagedExtract(pageNumber, pageSize, pageCount, results.ToList());
                 }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract", e);
+                throw;
+            }
+        }
+
+        public async Task<PagedExtract> ReadDataFilter(ExtractDefinition mainDefinition, ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string[] indicatorName = null, int[] period = null)
+        {
+            var whereList = new List<string>();
+            dynamic whereVals = new ExpandoObject();
+            pageNumber = pageNumber < 0 ? 1 : pageNumber;
+            pageSize = pageSize < 0 ? 1 : pageSize;
+
+            var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
+
+            var sql = $"{definition.SqlScript}";
+            var extractSql = $"{definition.SqlScript}";
+
+            whereVals.Offset = (pageNumber - 1) * pageSize;
+            whereVals.PageSize = pageSize;
+
+            try
+            {
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+
+
+                    if (null != siteCode && siteCode.Any())
+                    {
+                        whereList.Add($"SiteCode IN @SiteCode");
+                        whereVals.siteCode = siteCode;
+                    }
+
+                    if (null != indicatorName && indicatorName.Any())
+                    {
+                        whereList.Add($"indicatorName IN @indicatorName");
+                        whereVals.indicatorName = indicatorName;
+                    }
+
+                    if (null != period && period.Any())
+                    {
+                        whereList.Add($"SiteCode IN @period");
+                        whereVals.period = period;
+                    }
+
+                    if (whereList.Any())
+                        sql = $"{sql} WHERE {string.Join(" AND ", whereList)} ";
+
+                    sql = $"{sql} ORDER BY SiteCode ";
+
+                    var sqlPaging = @"
+                         OFFSET @Offset ROWS 
+                         FETCH NEXT @PageSize ROWS ONLY
+                    ";
+
+
+                    if (_extractDataSource.DatabaseType == DatabaseType.SqLite)
+                    {
+                        sqlPaging = @" LIMIT @PageSize OFFSET @Offset;";
+                    }
+
+                    sql = $"{sql}{sqlPaging}";
+
+                    IEnumerable<dynamic> results = new List<dynamic>();
+                    results = await cn.QueryAsync(sql, (object)whereVals);
+
+                    return new PagedExtract(pageNumber, pageSize, pageCount, results.ToList());
+
+                   }
             }
             catch (Exception e)
             {
