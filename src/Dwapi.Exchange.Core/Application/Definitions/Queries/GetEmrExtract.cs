@@ -59,9 +59,10 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
                     throw new Exception("Request does not exist");
 
                 PagedExtract extract;
-                
+
                 extract = await _extractReader.Read(extractRequest, request.EmrRequestDto.PageNumber, request.EmrRequestDto.PageSize,
-                    request.EmrRequestDto.EvaluationDate,request.EmrRequestDto.SiteCode,request.EmrRequestDto.CccNumber);
+                    request.EmrRequestDto.EvaluationDate, request.EmrRequestDto.SiteCode, request.EmrRequestDto.CccNumber, request.EmrRequestDto.recencyId,
+                    request.EmrRequestDto.indicatorName, request.EmrRequestDto.period);
 
                 return Result.Success(extract);
             }

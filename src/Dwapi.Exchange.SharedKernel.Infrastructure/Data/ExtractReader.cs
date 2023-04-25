@@ -14,6 +14,7 @@ using Dwapi.Exchange.SharedKernel.Model;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Serilog;
+using Serilog.Debugging;
 
 namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
 {
@@ -133,7 +134,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
         }
 
         public async Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber, int pageSize, DateTime? evaluationDate,
-            int[] siteCode = null, string cccNumber = "", string recencyId = "", string[] indicatorName = null, int[] period = null)
+            int[] siteCode = null, string cccNumber = "", string recencyId = "", string indicatorName = null, int[] period = null)
         {
             
            var whereList=new List<string>();
@@ -181,7 +182,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
 
                     if (null != indicatorName && indicatorName.Any())
                     {
-                        whereList.Add($"indicatorName IN @indicatorName");
+                        whereList.Add($"indicator_name = @indicatorName");
                         whereVals.indicatorName = indicatorName;
                     }
 
@@ -190,7 +191,6 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
                         whereList.Add($"period IN @period");
                         whereVals.period = period;
                     }
-                    Console.WriteLine(whereList);
 
                     if (whereList.Any())
                         sql = $"{sql} WHERE {string.Join(" AND ",whereList)} ";
@@ -209,7 +209,6 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
                     }
 
                     sql = $"{sql}{sqlPaging}";
-
 
                     IEnumerable<dynamic> results = new List<dynamic>();
                     results = await cn.QueryAsync(sql, (object) whereVals);
@@ -616,7 +615,7 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             }
         }
 
-        public async Task<PagedExtract> ReadDataFilter(ExtractDefinition mainDefinition, ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string[] indicatorName = null, int[] period = null)
+        public async Task<PagedExtract> ReadDataFilter( ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string indicatorName = null, int[] period = null)
         {
             var whereList = new List<string>();
             dynamic whereVals = new ExpandoObject();
@@ -640,26 +639,26 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
 
                     if (null != siteCode && siteCode.Any())
                     {
-                        whereList.Add($"SiteCode IN @SiteCode");
+                        whereList.Add($"FacilityCode IN @SiteCode");
                         whereVals.siteCode = siteCode;
                     }
 
                     if (null != indicatorName && indicatorName.Any())
                     {
-                        whereList.Add($"indicatorName IN @indicatorName");
+                        whereList.Add($"indicator_name = @indicatorName");
                         whereVals.indicatorName = indicatorName;
                     }
 
                     if (null != period && period.Any())
                     {
-                        whereList.Add($"SiteCode IN @period");
+                        whereList.Add($"period IN @period");
                         whereVals.period = period;
                     }
 
                     if (whereList.Any())
                         sql = $"{sql} WHERE {string.Join(" AND ", whereList)} ";
 
-                    sql = $"{sql} ORDER BY SiteCode ";
+                    sql = $"{sql} ORDER BY FacilityCode ";
 
                     var sqlPaging = @"
                          OFFSET @Offset ROWS 

@@ -11,5 +11,8 @@ namespace Dwapi.Exchange.Core.Domain.Definitions.Dtos
         public int[] SiteCode { get; set; }
         public DateTime? EvaluationDate { get; set; }
         public string CccNumber { get; set; }
+        public int [] period { get; set;}
+        public string indicatorName { get; set; }
+        public string recencyId { get; set; }
     }
 }

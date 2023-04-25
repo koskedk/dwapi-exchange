@@ -10,11 +10,11 @@ namespace Dwapi.Exchange.SharedKernel.Interfaces
     {
         Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber,int pageSize);
         Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber,int pageSize,int[] siteCode = null);
-        Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber,int pageSize,DateTime? evaluationDate,int[] siteCode = null,string cccNumber="",string recencyId = "", string[] indicatorName = null, int[] period = null);
+        Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber,int pageSize,DateTime? evaluationDate,int[] siteCode = null,string cccNumber="",string recencyId = "", string indicatorName = null, int[] period = null);
+        Task<PagedExtract> ReadDataFilter(ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string indicatorName = null, int[] period = null);
         Task<PagedExtract> ReadProc(ExtractDefinition definition, int pageNumber,int pageSize);
         Task<PagedExtract> ReadProfile(ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string[] county = null);
         Task<PagedExtract> ReadProfileFilter(ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string[] county = null, string gender="", int age=-1);
-        Task<PagedExtract> ReadDataFilter(ExtractDefinition mainDefinition,ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string[] indicatorName = null, int[] period = null);
         Task<PagedProfileExtract> ReadProfileFilterExpress(ExtractDefinition mainDefinition,ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string[] county = null, string gender="", int age=-1);
         Task<long> GetCount(ExtractDefinition definition);
         Task<long> GetCountFrom(ExtractDefinition definition,string fromSource,int[] siteCode);
