@@ -13,5 +13,7 @@ namespace Dwapi.Exchange.Models
         [FromQuery(Name = "evaluationDate")] public DateTime? evaluationDate { get; set; }
         [FromQuery(Name = "cccNumber")] public string cccNumber { get; set; }
         [FromQuery(Name = "recencyId")] public string recencyId { get; set; }
+        [FromQuery(Name = "period")] public string[] period { get; set; }
+        [FromQuery(Name = "indicatorName")] public string indicatorName { get; set; }
     }
 }
