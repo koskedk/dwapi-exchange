@@ -1,5 +1,9 @@
 Id,Name,Purpose,Code
-581B172E-F763-11EA-ADC1-0242AC120002,CDC Palantir,CDC Palantir data request,PDA
-052C38FB-5B6E-4FE9-9FCC-20CC8EE72DF8,ML Foundry,Foundry ML Data,FND
-8F6CCA8B-917C-4A59-B32E-D67DB4755DA5,CDC DTG,DTG Study,DTG
-98FBB9EE-B897-4E63-8A45-DA013477DC6F,Health Strat,Health Strat Priority Indicators,MMD
+581b172e-f763-11ea-adc1-0242ac120002,CDC Palantir,CDC Palantir data request,PDA
+052c38fb-5b6e-4fe9-9fcc-20cc8ee72df8,ML Foundry,Foundry ML Data,FND
+7e15bacb-3057-4412-9db0-cb0d3e1af146,HTS Recency,HTS Recency,HTSR
+1f6cca8b-a720-4a59-b32e-d67db4755da4,JKUAT,JKUAT API EXCHANGE,JKEX
+8f6cca8b-917c-4a59-b32e-d67db4755da5,CDC DTG,DTG Study,DTG
+98fbb9ee-b897-4e63-8a45-da013477dc6f,Health Strat,Health Strat Priority Indicators,MMD
+98fbb9ee-b899-4e63-8a45-da013477dc6f,Health Strat Exchange,Health Strat Data Exchange,DEA
+99fbb9ee-b899-4e63-8a45-da013477dc6f,AYP Indicators,NASCOP AYP Indicators,AYP

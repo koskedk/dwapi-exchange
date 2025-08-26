@@ -6,6 +6,7 @@ using AutoMapper;
 using Dwapi.Exchange.Core.Application.Definitions.Queries;
 using Dwapi.Exchange.Core.Domain.Definitions.Dtos;
 using Dwapi.Exchange.Models;
+using Dwapi.Exchange.SharedKernel.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -146,6 +147,52 @@ namespace Dwapi.Exchange.Controllers
             {
 
                 var request = new GetProfileExtract(req.code, "Profile", req.pageNumber, req.pageSize,req.siteCode,req.county,req.gender,req.age);
+
+                var results = await _mediator.Send(request);
+
+                if (results.IsSuccess)
+                    return Ok(results.Value);
+
+                throw new Exception(results.Error);
+            }
+            catch (Exception e)
+            {
+                var msg = $"Error loading Dataset ";
+                Log.Error(e, msg);
+                return StatusCode(500, $"{msg} {e.Message}");
+            }
+        }
+        
+        [HttpGet("Indicators")]
+        public async Task<ActionResult> GetIndicators([FromQuery] FilterDto req)
+        {
+            #region Move to middleware
+
+            try
+            {
+                var client = User.Claims.FirstOrDefault(c => c.Type == "client_id")?.Value;
+                var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+
+                Log.Warning($"Client:{client}");
+                Log.Warning($"ClientIp:{ip}");
+                Log.Warning($"Request:{Request.Path}");
+                Log.Warning($"Query:{Request.QueryString}");
+                Log.Warning(new string('-',50));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e,"Request error");
+            }
+
+            #endregion
+
+
+            try
+            {
+
+                var filter = _mapper.Map<DatasetFilter>(req);
+                
+                var request = new GetIndicatorExtract(filter);
 
                 var results = await _mediator.Send(request);
 

@@ -8,6 +8,7 @@ namespace Dwapi.Exchange.SharedKernel.Interfaces
 {
     public interface IExtractReader
     {
+        Task<PagedExtract> Read(ExtractDefinition definition,DatasetFilter filter);
         Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber,int pageSize);
         Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber,int pageSize,int[] siteCode = null);
         Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber,int pageSize,DateTime? evaluationDate,int[] siteCode = null,string cccNumber="",string recencyId = "", string indicatorName = null, int[] period = null);
