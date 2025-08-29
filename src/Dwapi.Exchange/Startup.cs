@@ -1,13 +1,18 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Dwapi.Exchange.Core;
+using Dwapi.Exchange.Core.Domain.Definitions.Dtos;
 using Dwapi.Exchange.Infrastructure;
 using Dwapi.Exchange.Infrastructure.Data;
+using Dwapi.Exchange.Models;
 using Dwapi.Exchange.SharedKernel.Common;
 using Dwapi.Exchange.SharedKernel.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +27,7 @@ namespace Dwapi.Exchange
     {
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
+        public bool DisableAuth { get; set; }
 
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
@@ -29,6 +35,8 @@ namespace Dwapi.Exchange
                 .SetBasePath(environment.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
+                .AddJsonFile("serilog.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"serilog.{environment.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
@@ -39,7 +47,7 @@ namespace Dwapi.Exchange
         public void ConfigureServices(IServiceCollection services)
         {
             var authority = Configuration["Authority"];
-
+            DisableAuth = string.IsNullOrWhiteSpace(authority);
             try
             {
                 AppConstants.ExtractReadMode = (ReadMode) Convert.ToInt32(Configuration["ReadMode"]);
@@ -50,7 +58,12 @@ namespace Dwapi.Exchange
             }
 
             IdentityModelEventSource.ShowPII = true;
-            services.AddControllers()
+
+            if (DisableAuth)
+                services.AddControllers();
+            else
+               services.AddControllers(opt => opt.Filters.Add(new AuthorizeFilter()));
+
                 ;//.AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; } );
             services.AddSwaggerGen();
             services.AddAuthentication("Bearer")
@@ -65,9 +78,7 @@ namespace Dwapi.Exchange
                 });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddInfrastructure(Configuration);
-            services.AddApplication();
-
-
+            services.AddApplication(null, new List<Assembly> { typeof(ExchangeProfile).Assembly });
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders =
@@ -78,6 +89,7 @@ namespace Dwapi.Exchange
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSerilogRequestLogging();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

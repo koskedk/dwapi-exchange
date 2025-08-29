@@ -46,5 +46,21 @@ namespace Dwapi.Exchange.Core.Tests.Application.Definitions.Queries
             Log.Debug(top5.ToString());
             Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
         }
+        
+        [Test]
+        public void should_Get_Prediciton_Extract()
+        {
+            var getExtract = new GetExtract("dwh","predictions",1,5);
+
+            var result = _mediator.Send(getExtract).Result;
+            Assert.True(result.IsSuccess);
+            var top5 = result.Value;
+            Assert.AreEqual(1,top5.PageNumber);
+            Assert.AreEqual(5,top5.PageSize);
+            Assert.AreEqual(1,top5.PageCount);
+            Assert.AreEqual(5,top5.TotalItemCount);
+            Log.Debug(top5.ToString());
+            Log.Debug(JsonConvert.SerializeObject(top5.Extract.First()));
+        }
     }
 }

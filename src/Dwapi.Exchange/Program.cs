@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -11,17 +12,11 @@ namespace Dwapi.Exchange
     {
         public static void Main(string[] args)
         {
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("obs.json", optional: false)
-                .Build();
-            var seqUrl = config.GetSection("Seq").Get<string>();
+            var configuration = GetConfig(args);
+
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Debug)
+                .ReadFrom.Configuration(configuration)
                 .Enrich.FromLogContext()
-                .WriteTo.Console(LogEventLevel.Debug)
-                //.WriteTo.File("logs/log.txt", LogEventLevel.Error, rollingInterval: RollingInterval.Day)
-                .WriteTo.Seq(seqUrl,LogEventLevel.Warning)
                 .CreateLogger();
 
             try
@@ -52,6 +47,7 @@ namespace Dwapi.Exchange
         {
             return new ConfigurationBuilder()
                 .AddJsonFile("hosting.json", optional: true)
+                .AddJsonFile("serilog.json", optional: true, reloadOnChange: true)
                 .AddCommandLine(args).Build();
         }
     }

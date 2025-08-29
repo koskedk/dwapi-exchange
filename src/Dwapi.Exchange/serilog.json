@@ -1,0 +1,39 @@
+﻿{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Debug",
+      "Override": {
+        "Microsoft": "Information"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Console"
+      },
+      {
+        "Name": "File",
+        "Args": {
+          "restrictedToMinimumLevel": "Error",
+          "path": "Log/dwapi_exchange_.log",
+          "rollingInterval": "Day"
+        }
+      },
+      {
+        "Name": "MSSqlServer",
+        "Args": {
+          "restrictedToMinimumLevel": "Warning",
+          "connectionString": "Server=host.docker.internal;Database=DwapiExchange;User Id=dwh;Password=dwh;MultipleActiveResultSets=true;Encrypt=False",
+          "tableName": "Log",
+          "columnOptionsSection": {
+            "addStandardColumns": [
+              "LogEvent"
+            ],
+            "removeStandardColumns": [
+              "Properties"
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

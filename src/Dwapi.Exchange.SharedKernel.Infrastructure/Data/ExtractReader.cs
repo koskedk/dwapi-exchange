@@ -14,6 +14,7 @@ using Dwapi.Exchange.SharedKernel.Model;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Serilog;
+using Serilog.Debugging;
 
 namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
 {
@@ -25,7 +26,72 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
         {
             _extractDataSource = extractDataSource ?? throw new Exception("Datasource not initialized !");
         }
+        public async Task<PagedExtract> Read(ExtractDefinition definition, DatasetFilter filter)
+        {
+            var pageNumber=filter.PageNumber;
+            var pageSize = filter.PageSize;
+            var whereList=new List<string>();
+            dynamic whereVals = new ExpandoObject();
+            pageNumber = pageNumber < 0 ? 1 : pageNumber;
+            pageSize = pageSize < 0 ? 1 : pageSize;
 
+            var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
+
+            var sql = $"{definition.SqlScript}";
+
+            whereVals.Offset = (pageNumber - 1) * pageSize;
+            whereVals.PageSize = pageSize;
+
+            try
+            {
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+
+
+                    if (null !=  filter.SiteCodes && filter.SiteCodes.Any())
+                    {
+                        whereList.Add($"FacilityCode IN @siteCode");
+                        whereVals.siteCode = filter.SiteCodes;
+                    }
+
+                    if (null != filter.Indicators && filter.Indicators.Any())
+                    {
+                        whereList.Add($"Indicator IN @indicators");
+                        whereVals.indicators = filter.Indicators;
+                    }
+
+                    if (whereList.Any())
+                        sql = $"{sql} WHERE {string.Join(" AND ",whereList)} ";
+
+                    sql = $"{sql} ORDER BY LiveRowId ";
+
+                    var sqlPaging = @"
+                         OFFSET @Offset ROWS 
+                         FETCH NEXT @PageSize ROWS ONLY
+                    ";
+
+
+                    if (_extractDataSource.DatabaseType == DatabaseType.SqLite)
+                    {
+                        sqlPaging = @" LIMIT @PageSize OFFSET @Offset;";
+                    }
+
+                    sql = $"{sql}{sqlPaging}";
+
+                    IEnumerable<dynamic> results = new List<dynamic>();
+                    results = await cn.QueryAsync(sql, (object) whereVals);
+
+                    return new PagedExtract(pageNumber, pageSize, pageCount, results.ToList());
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract", e);
+                throw;
+            }
+        }
+         
         public async Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber, int pageSize)
         {
             pageNumber = pageNumber < 0 ? 1 : pageNumber;
@@ -58,6 +124,160 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
                         Offset = (pageNumber - 1) * pageSize,
                         PageSize = pageSize
                     });
+                    return new PagedExtract(pageNumber, pageSize, pageCount, results.ToList());
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract", e);
+                throw;
+            }
+        }
+
+        public async Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null)
+        {
+            pageNumber = pageNumber < 0 ? 1 : pageNumber;
+            pageSize = pageSize < 0 ? 1 : pageSize;
+            bool reCount = false;
+            var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
+
+            var sql = $"{definition.SqlScript}";
+
+            var sqlPaging = @"
+                 OFFSET @Offset ROWS 
+                 FETCH NEXT @PageSize ROWS ONLY
+            ";
+
+            if (_extractDataSource.DatabaseType == DatabaseType.SqLite)
+            {
+                sqlPaging = @" LIMIT @PageSize OFFSET @Offset;";
+            }
+
+            if (null!=siteCode && siteCode.Any())
+            {
+                sql = $"{sql} WHERE FacilityCode IN @siteCode"; reCount = true;
+                var count =await GetCountFrom(definition, sql,siteCode);  
+                pageCount = Utils.PageCount(pageSize, count);
+            }
+
+            sql = $"{sql} ORDER BY LiveRowId {sqlPaging}";
+
+
+            try
+            {
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+
+                    IEnumerable<dynamic> results;
+                    if (null!=siteCode && siteCode.Any())
+                    {
+                        results = await cn.QueryAsync(sql, new
+                        {
+                            Offset = (pageNumber - 1) * pageSize,
+                            PageSize = pageSize,
+                            siteCode=siteCode
+                        });
+                    }
+                    else
+                    {
+                        results = await cn.QueryAsync(sql, new
+                        {
+                            Offset = (pageNumber - 1) * pageSize,
+                            PageSize = pageSize
+                        });
+                    }
+
+                    return new PagedExtract(pageNumber, pageSize, pageCount, results.ToList());
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract", e);
+                throw;
+            }
+        }
+
+        public async Task<PagedExtract> Read(ExtractDefinition definition, int pageNumber, int pageSize, DateTime? evaluationDate,
+            int[] siteCode = null, string cccNumber = "", string recencyId = "", string indicatorName = null, int[] period = null)
+        {
+            
+           var whereList=new List<string>();
+            dynamic whereVals = new ExpandoObject();
+            pageNumber = pageNumber < 0 ? 1 : pageNumber;
+            pageSize = pageSize < 0 ? 1 : pageSize;
+
+            var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
+
+            var sql = $"{definition.SqlScript}";
+
+            whereVals.Offset = (pageNumber - 1) * pageSize;
+            whereVals.PageSize = pageSize;
+
+            try
+            {
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+
+
+                    if (null != siteCode && siteCode.Any())
+                    {
+                        whereList.Add($"FacilityCode IN @siteCode");
+                        whereVals.siteCode = siteCode;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(cccNumber))
+                    {
+                        whereList.Add($"PatientCccNumber = @cccNumber");
+                        whereVals.cccNumber = cccNumber;
+                    }
+
+                    if (evaluationDate.HasValue && evaluationDate>new DateTime(1901,1,1))
+                    {
+                        whereList.Add($"evaluationDate > @evaluationDate");
+                        whereVals.evaluationDate = evaluationDate.Value.Date;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(recencyId))
+                    {
+                        whereList.Add($"recencyId = @recencyId");
+                        whereVals.recencyId = recencyId;
+                    }
+
+                    if (null != indicatorName && indicatorName.Any())
+                    {
+                        whereList.Add($"indicator_name = @indicatorName");
+                        whereVals.indicatorName = indicatorName;
+                    }
+
+                    if (null != period && period.Any())
+                    {
+                        whereList.Add($"period IN @period");
+                        whereVals.period = period;
+                    }
+
+                    if (whereList.Any())
+                        sql = $"{sql} WHERE {string.Join(" AND ",whereList)} ";
+
+                    sql = $"{sql} ORDER BY LiveRowId ";
+
+                    var sqlPaging = @"
+                         OFFSET @Offset ROWS 
+                         FETCH NEXT @PageSize ROWS ONLY
+                    ";
+
+
+                    if (_extractDataSource.DatabaseType == DatabaseType.SqLite)
+                    {
+                        sqlPaging = @" LIMIT @PageSize OFFSET @Offset;";
+                    }
+
+                    sql = $"{sql}{sqlPaging}";
+
+                    IEnumerable<dynamic> results = new List<dynamic>();
+                    results = await cn.QueryAsync(sql, (object) whereVals);
+
                     return new PagedExtract(pageNumber, pageSize, pageCount, results.ToList());
                 }
             }
@@ -108,8 +328,6 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
 
             var sql = $"{definition.SqlScript}";
-
-
 
 
             try
@@ -462,6 +680,78 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             }
         }
 
+        public async Task<PagedExtract> ReadDataFilter( ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null, string indicatorName = null, int[] period = null)
+        {
+            var whereList = new List<string>();
+            dynamic whereVals = new ExpandoObject();
+            pageNumber = pageNumber < 0 ? 1 : pageNumber;
+            pageSize = pageSize < 0 ? 1 : pageSize;
+
+            var pageCount = Utils.PageCount(pageSize, definition.RecordCount);
+
+            var sql = $"{definition.SqlScript}";
+            var extractSql = $"{definition.SqlScript}";
+
+            whereVals.Offset = (pageNumber - 1) * pageSize;
+            whereVals.PageSize = pageSize;
+
+            try
+            {
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+
+
+                    if (null != siteCode && siteCode.Any())
+                    {
+                        whereList.Add($"FacilityCode IN @SiteCode");
+                        whereVals.siteCode = siteCode;
+                    }
+
+                    if (null != indicatorName && indicatorName.Any())
+                    {
+                        whereList.Add($"indicator_name = @indicatorName");
+                        whereVals.indicatorName = indicatorName;
+                    }
+
+                    if (null != period && period.Any())
+                    {
+                        whereList.Add($"period IN @period");
+                        whereVals.period = period;
+                    }
+
+                    if (whereList.Any())
+                        sql = $"{sql} WHERE {string.Join(" AND ", whereList)} ";
+
+                    sql = $"{sql} ORDER BY FacilityCode ";
+
+                    var sqlPaging = @"
+                         OFFSET @Offset ROWS 
+                         FETCH NEXT @PageSize ROWS ONLY
+                    ";
+
+
+                    if (_extractDataSource.DatabaseType == DatabaseType.SqLite)
+                    {
+                        sqlPaging = @" LIMIT @PageSize OFFSET @Offset;";
+                    }
+
+                    sql = $"{sql}{sqlPaging}";
+
+                    IEnumerable<dynamic> results = new List<dynamic>();
+                    results = await cn.QueryAsync(sql, (object)whereVals);
+
+                    return new PagedExtract(pageNumber, pageSize, pageCount, results.ToList());
+
+                   }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract", e);
+                throw;
+            }
+        }
+
         public async Task<PagedProfileExtract> ReadProfileFilterExpress(ExtractDefinition mainDefinition,ExtractDefinition definition, int pageNumber, int pageSize, int[] siteCode = null,
             string[] county = null, string gender = "", int age = -1)
         {
@@ -591,6 +881,29 @@ namespace Dwapi.Exchange.SharedKernel.Infrastructure.Data
             }
         }
 
+        public async Task<long> GetCountFrom(ExtractDefinition definition,string fromSource,int[] siteCode)
+        {
+            try
+            {
+                var sql = definition.GenerateCountScript(fromSource);
+                using (var cn = GetConnection())
+                {
+                    cn.Open();
+                    var results = await cn.QueryAsync<long>(sql,new {siteCode});
+
+                    var counts = results.ToList();
+                    if (counts.Any())
+                        return counts.First();
+                    return 0;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error reading extract count", e);
+                throw;
+            }
+        }
+        
         public Task Initialize(ExtractDefinition definition)
         {
             throw new NotImplementedException();

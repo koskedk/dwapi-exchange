@@ -79,9 +79,15 @@ namespace Dwapi.Exchange.Core.Application.Definitions.Queries
                 }
                 else
                 {
-                    extract = AppConstants.ExtractReadMode == ReadMode.Proc
-                        ? await _extractReader.ReadProc(extractRequest, request.Page, request.PageSize)
-                        : await _extractReader.Read(extractRequest, request.Page, request.PageSize);
+                    if (AppConstants.ExtractReadMode == ReadMode.Proc)
+                    {
+                        extract = await _extractReader.ReadProc(extractRequest, request.Page, request.PageSize);
+                    }
+                    else
+                    {
+                        extract = await _extractReader.Read(extractRequest, request.Page, request.PageSize,
+                            request.SiteCode);
+                    }
                 }
 
                 return Result.Success(extract);
